@@ -1,0 +1,9 @@
+.boton {
+  position: fixed; bottom: 20px; right: 16px; z-index: 40;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #25d366; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, .4);
+  transition: transform .15s ease;
+}
+.boton:active { transform: scale(.92); }

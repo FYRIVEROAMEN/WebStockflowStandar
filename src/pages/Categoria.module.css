@@ -1,0 +1,12 @@
+.wrap { max-width: 1100px; margin: 0 auto; padding: 16px; }
+.titulo { font-size: 1.3rem; font-weight: 800; text-transform: capitalize; color: var(--color-texto); }
+.filtros { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 16px; }
+.chip {
+  padding: 6px 12px; border-radius: 999px;
+  border: 1.5px solid var(--color-borde); background: #fff;
+  font-size: .8rem; font-weight: 600; color: var(--color-texto);
+}
+.chipActivo { border-color: var(--color-primario); color: var(--color-primario); background: #eff6ff; }
+.grilla { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.vacio { text-align: center; color: var(--color-texto-suave); padding: 40px 0; }
+@media (min-width: 768px) { .grilla { grid-template-columns: repeat(4, 1fr); gap: 16px; } }

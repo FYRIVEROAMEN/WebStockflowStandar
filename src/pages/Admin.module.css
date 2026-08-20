@@ -1,0 +1,81 @@
+/* ---------- GATE (login) ---------- */
+.gate { max-width: 320px; margin: 60px auto; padding: 24px; background: #fff; border: 1px solid var(--color-borde); border-radius: var(--radio-card); text-align: center; }
+.gateTitulo { font-size: 1.1rem; font-weight: 800; margin-bottom: 16px; }
+.gateInput { width: 100%; padding: 10px; border: 1.5px solid var(--color-borde); border-radius: 10px; font-size: 1rem; text-align: center; }
+.gateBtn { margin-top: 12px; width: 100%; padding: 12px; background: var(--color-primario); color: #fff; border: none; border-radius: 10px; font-weight: 700; }
+
+/* ---------- LAYOUT ---------- */
+.wrap { max-width: 700px; margin: 0 auto; padding: 16px; }
+.titulo { font-size: 1.3rem; font-weight: 800; margin-bottom: 12px; }
+.volver { display: inline-flex; align-items: center; gap: 4px; background: none; border: none; color: var(--color-texto-suave); font-size: .9rem; margin-bottom: 8px; }
+
+/* ---------- TABS ---------- */
+.tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+.tab { flex: 1; padding: 10px; border-radius: 10px; border: 1.5px solid var(--color-borde); background: #fff; font-weight: 700; font-size: .85rem; color: var(--color-texto-suave); cursor: pointer; }
+.tabActiva { border-color: var(--color-primario); color: var(--color-primario); background: #eff6ff; }
+
+/* ---------- LISTA DE PRODUCTOS ---------- */
+.vacio { text-align: center; color: var(--color-texto-suave); padding: 32px 0; }
+.lista { display: flex; flex-direction: column; gap: 10px; }
+.item { display: flex; gap: 10px; align-items: center; background: #fff; border: 1px solid var(--color-borde); border-radius: var(--radio-card); padding: 10px; }
+.itemImg { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; background: #f3f4f6; }
+.itemInfo { flex: 1; min-width: 0; }
+.itemNombre { font-weight: 700; font-size: .9rem; }
+.itemMeta { font-size: .75rem; color: var(--color-texto-suave); }
+.itemAcciones { display: flex; gap: 6px; }
+.btnAprobar, .btnRechazar, .btnQuitar { width: 38px; height: 38px; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; }
+.btnAprobar { background: #16a34a; }
+.btnRechazar { background: #dc2626; }
+.btnQuitar { background: #6b7280; }
+
+/* ---------- EDICIÓN DE PRODUCTO ---------- */
+.fotoPrincipal { border-radius: var(--radio-card); overflow: hidden; background: #f3f4f6; aspect-ratio: 1; margin-bottom: 12px; }
+.fotoPrincipal img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.label { display: block; font-size: .85rem; font-weight: 700; margin: 12px 0 6px; }
+.textarea, .input { width: 100%; padding: 10px; border: 1.5px solid var(--color-borde); border-radius: 10px; font-size: .95rem; font-family: inherit; box-sizing: border-box; }
+.fila { display: flex; gap: 12px; }
+.mitad { flex: 1; }
+.check { display: flex; gap: 6px; align-items: center; font-size: .9rem; font-weight: 600; padding: 10px 0; }
+.fotosRow { display: flex; gap: 8px; flex-wrap: wrap; }
+.fotoExtra { position: relative; width: 72px; height: 72px; border-radius: 10px; overflow: hidden; }
+.fotoExtra img { width: 100%; height: 100%; object-fit: cover; }
+.fotoBorrar { position: absolute; top: 4px; right: 4px; background: rgba(0, 0, 0, .6); color: #fff; border: none; border-radius: 6px; padding: 4px; display: flex; cursor: pointer; }
+.fotoAdd { width: 72px; height: 72px; border: 2px dashed var(--color-borde); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--color-texto-suave); font-size: .65rem; cursor: pointer; }
+.aprobarBtn { margin-top: 20px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; background: #16a34a; color: #fff; border: none; border-radius: var(--radio-boton); font-size: 1rem; font-weight: 700; cursor: pointer; }
+
+/* ---------- MODALES (quitar / rechazar) ---------- */
+.modalOverlay {
+  position: fixed; inset: 0;
+  background: rgba(0, 0, 0, .5);
+  z-index: 80;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+  animation: fadeIn .15s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}
+.modalBox {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  width: 100%; max-width: 340px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .3);
+  animation: popIn .2s ease-out;
+}
+@keyframes popIn {
+  from { opacity: 0; transform: scale(.95) translateY(8px) }
+  to { opacity: 1; transform: scale(1) translateY(0) }
+}
+.modalTexto { font-weight: 700; font-size: .95rem; color: #111827; margin: 0 0 4px; }
+.modalSub { font-size: .72rem; color: #6b7280; margin: 0 0 10px; }
+.modalBtns { display: flex; gap: 8px; margin-top: 14px; }
+.modalCancel { flex: 1; padding: 10px; border: 1.5px solid #e5e7eb; background: #fff; border-radius: 10px; font-weight: 700; font-size: .8rem; cursor: pointer; }
+.modalDanger { flex: 1; padding: 10px; border: none; background: #dc2626; color: #fff; border-radius: 10px; font-weight: 700; font-size: .8rem; cursor: pointer; }
+
+
+@media (min-width: 768px) {
+  .wrap { max-width: 960px; padding: 24px; }
+  .lista { display: grid; grid-template-columns: 1fr 1fr; }
+}

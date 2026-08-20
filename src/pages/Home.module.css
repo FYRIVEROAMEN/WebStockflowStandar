@@ -1,0 +1,116 @@
+/* ---------- MOBILE: full-bleed (edge-to-edge como SKM) ---------- */
+.home { max-width: 700px; margin: 0 auto; padding: 0 0 16px; }
+
+/* ---------- 3 cards de secciones (patrón SKM) ---------- */
+.promos {
+  display: flex; gap: 10px;
+  overflow-x: auto;
+  margin: 0 -12px; padding: 16px 12px 4px;
+  scrollbar-width: none;
+}
+.promos::-webkit-scrollbar { display: none; }
+.promo {
+  flex: 0 0 70%;
+  min-height: 180px;
+  border-radius: 14px;
+  padding: 18px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  color: #fff; text-decoration: none;
+}
+.promo1 { background: linear-gradient(135deg, #0ea5e9, #22c55e); }
+.promo2 { background: linear-gradient(135deg, #e11d48, #f97316); }
+.promo3 { background: linear-gradient(135deg, #111827, #4b5563); }
+.promo4 { background: linear-gradient(135deg, #7c3aed, #db2777); }
+.promoTitulo { font-size: 1.4rem; font-weight: 800; margin: 0; text-transform: uppercase; }
+.promoSub { font-size: .75rem; opacity: .85; margin: 2px 0 10px; }
+.promoBtn {
+  align-self: flex-start;
+  background: #111827; color: #fff;
+  font-size: .7rem; font-weight: 700;
+  padding: 8px 14px; border-radius: 4px;
+  text-transform: uppercase; letter-spacing: .5px;
+}
+
+.seccion { margin-top: 20px; padding: 0 12px; }
+.seccionHeader { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.titulo { font-size: 1.15rem; font-weight: 800; color: var(--color-texto); margin: 0; }
+.verMas { font-size: .8rem; color: var(--color-primario, #2563eb); text-decoration: none; font-weight: 600; }
+
+.vacio { text-align: center; color: var(--color-texto-suave); padding: 32px 0; font-size: .9rem; }
+.vacioBox { text-align: center; padding: 40px 16px; background: #fff; border: 1px solid var(--color-borde); border-radius: var(--radio-card); }
+.vacioSub { font-size: .8rem; color: var(--color-texto-suave); margin-top: 4px; }
+
+/* Grilla de 2 columnas (pocos productos / destacados) */
+.grilla { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+/* Carrusel full-bleed: rompe el padding de la sección, el scroll toca el borde */
+.carrusel {
+  display: flex; gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  margin: 0 -12px;
+  padding: 0 12px 8px;
+  scrollbar-width: none;
+}
+.carrusel::-webkit-scrollbar { display: none; }
+.carruselItem { flex: 0 0 46%; scroll-snap-align: start; }
+.carruselItem > * { width: 100%; }
+
+/* Chips de "Más categorías" (por si quedan sueltos) */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 14px; border-radius: 999px;
+  background: #fff; border: 1px solid #e5e7eb;
+  font-size: .85rem; font-weight: 600; color: #111827;
+  text-decoration: none;
+}
+.count { background: #2563eb; color: #fff; font-size: .65rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; }
+
+/* ---------- DESKTOP: vuelve el aire elegante ---------- */
+@media (min-width: 768px) {
+  .home { max-width: 1080px; padding: 0 24px 32px; }
+  .seccion { padding: 0; margin-top: 28px; }
+  .carrusel { margin: 0; padding: 0 0 8px; }
+  .grilla { grid-template-columns: repeat(4, 1fr); }
+  .carruselItem { flex: 0 0 23.5%; }
+  .titulo { font-size: 1.4rem; }
+  
+  /* 3 cards en grilla 3 columnas */
+  .promos { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin: 0; padding: 24px 0 0; overflow: visible; }
+  .promo { flex: none; min-height: 300px; }
+  .promoTitulo { font-size: 1.8rem; }
+}
+
+/* ---------- Estado vacío / onboarding ---------- */
+.onboarding {
+  max-width: 420px;
+  margin: 40px auto;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-card);
+  text-align: center;
+}
+.onbEmoji { font-size: 2.5rem; margin: 0 0 8px; }
+.onbTitulo { font-size: 1.2rem; font-weight: 800; margin: 0 0 6px; color: var(--color-texto); }
+.onbSub { font-size: .85rem; color: var(--color-texto-suave); margin: 0 0 16px; }
+
+.paso {
+  display: flex; gap: 12px; align-items: flex-start;
+  text-align: left;
+  padding: 12px;
+  border: 1.5px dashed var(--color-borde);
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+.pasoNum, .pasoOk {
+  width: 26px; height: 26px; border-radius: 50%;
+  color: #fff; font-weight: 800; font-size: .8rem;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.pasoNum { background: var(--color-primario); }
+.pasoOk { background: #16a34a; }
+.pasoTxt { font-size: .85rem; font-weight: 600; margin: 2px 0 6px; color: var(--color-texto); }
+.pasoBtn { font-size: .75rem; font-weight: 700; color: var(--color-primario); text-decoration: none; }

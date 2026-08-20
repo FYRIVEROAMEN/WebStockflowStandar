@@ -1,0 +1,25 @@
+.barra {
+
+    width: 100vw;
+  margin-left: calc(50% - 50vw);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: linear-gradient(90deg, #dc2626, #f97316);
+  color: #fff;
+  overflow: hidden;
+  padding: 8px 0;
+  font-size: .75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.track {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scroll 30s linear infinite;
+}
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
