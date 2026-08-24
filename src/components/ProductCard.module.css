@@ -1,46 +1,46 @@
-.card {
-  background: #fff; border: 1px solid var(--color-borde);
-  border-radius: var(--radio-card); overflow: hidden;
-  box-shadow: var(--sombra-card); display: block;
-  cursor: pointer;
-}
+    .card {
+      background: #fff; border: 1px solid var(--color-borde);
+      border-radius: var(--radio-card); overflow: hidden;
+      box-shadow: var(--sombra-card); display: block;
+      cursor: pointer;
+    }
 
-.imgBox { aspect-ratio: 3 / 4; background: #f3f4f6; position: relative; }
-.img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.sinFoto { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2rem; background: #f3f4f6; }
+    .imgBox { aspect-ratio: 3 / 4; background: #f3f4f6; position: relative; }
+    .img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .sinFoto { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 2rem; background: #f3f4f6; }
 
-.nombre {
-  padding: 8px 10px 0; font-size: .85rem; font-weight: 600;
-  color: var(--color-texto);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
+    .nombre {
+      padding: 8px 10px 0; font-size: .85rem; font-weight: 600;
+      color: var(--color-texto);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
 
-/* ---------- Precios: lista arriba, transferencia abajo ---------- */
-.precio { padding: 2px 10px 0; font-size: .9rem; font-weight: 800; color: var(--color-primario); }
-.precioTransf {
-  padding: 0 10px 4px; margin: 0;
-  font-size: .7rem; font-weight: 700; color: #16a34a;
-}
+    /* ---------- Precios: lista arriba, transferencia abajo ---------- */
+    .precio { padding: 2px 10px 0; font-size: .9rem; font-weight: 800; color: var(--color-primario); }
+    .precioTransf {
+      padding: 0 10px 4px; margin: 0;
+      font-size: .7rem; font-weight: 700; color: #16a34a;
+    }
 
-/* ---------- Badges ---------- */
-.badges { position: absolute; top: 8px; left: 8px; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
-.badgeNuevo { background: #16a34a; color: #fff; font-size: .65rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; }
-.badgeColores { background: rgba(0, 0, 0, .65); color: #fff; font-size: .65rem; font-weight: 600; padding: 3px 8px; border-radius: 999px; }
-.badgeAgotado { background: #dc2626; color: #fff; font-size: .65rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; }
+    /* ---------- Badges ---------- */
+    .badges { position: absolute; top: 8px; left: 8px; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; }
+    .badgeNuevo { background: #16a34a; color: #fff; font-size: .65rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; }
+    .badgeColores { background: rgba(0, 0, 0, .65); color: #fff; font-size: .65rem; font-weight: 600; padding: 3px 8px; border-radius: 999px; }
+    .badgeAgotado { background: #dc2626; color: #fff; font-size: .65rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; }
 
-/* ---------- Dots INFORMATIVOS (colores disponibles, no clickeables) ---------- */
-.dots { display: flex; gap: 4px; align-items: center; padding: 4px 10px 0; }
-.dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #e5e7eb; }
-.dotMas { font-size: .65rem; color: #6b7280; }
+    /* ---------- Dots INFORMATIVOS (colores disponibles, no clickeables) ---------- */
+    .dots { display: flex; gap: 4px; align-items: center; padding: 4px 10px 0; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #e5e7eb; }
+    .dotMas { font-size: .65rem; color: #6b7280; }
 
-/* ---------- Botón agregar / ver opciones ---------- */
-.comprar {
-  margin: 8px 10px 10px;
-  width: calc(100% - 20px);
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  padding: 8px; border: none; border-radius: 8px;
-  background: #111827; color: #fff;
-  font-size: .75rem; font-weight: 700;
-  cursor: pointer;
-}
-.comprar:disabled { background: #d1d5db; cursor: not-allowed; }
+    /* ---------- Botón agregar / ver opciones ---------- */
+    .comprar {
+      margin: 8px 10px 10px;
+      width: calc(100% - 20px);
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 8px; border: none; border-radius: 8px;
+      background: #111827; color: #fff;
+      font-size: .75rem; font-weight: 700;
+      cursor: pointer;
+    }
+    .comprar:disabled { background: #d1d5db; cursor: not-allowed; }

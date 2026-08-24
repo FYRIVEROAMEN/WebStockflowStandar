@@ -1,14 +1,29 @@
 /* ---------- NAVBAR BASE ---------- */
 .navbar {
-  position: sticky; top: 0; z-index: 50;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 12px; gap: 8px;
-  background: #fff; border-bottom: 1px solid var(--color-borde);
-  transition: padding .25s ease, box-shadow .25s ease;
-}
-.navbarCompacto { box-shadow: 0 2px 8px rgba(0, 0, 0, .06); }
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  gap: 8px;
+  background: #fff;
+  border-bottom: 1px solid var(--color-borde);
 
-.hamburguesa { background: none; border: none; color: var(--color-texto); display: flex; padding: 6px; }
+}
+
+.navbarCompacto {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+}
+
+.hamburguesa {
+  background: none;
+  border: none;
+  color: var(--color-texto);
+  display: flex;
+  padding: 6px;
+}
 
 .logo {
   flex: 1;
@@ -19,20 +34,30 @@
   align-items: center;
   gap: 8px;
 }
+
 .logoIcon {
-  width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0;
-  background: var(--color-primario); color: #fff;
-  display: flex; align-items: center; justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  flex-shrink: 0;
+  background: var(--color-primario);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all .25s ease;
 }
+
 .logoText {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   transition: font-size .25s ease;
 }
+
 .logoImg {
-  width: auto; height: 38px;
+  width: auto;
+  height: 38px;
   max-width: 160px;
   object-fit: contain;
   flex-shrink: 0;
@@ -46,78 +71,223 @@
   gap: 8px;
   margin-left: 8px;
 }
-.cartBtn { position: relative; color: var(--color-texto); display: flex; text-decoration: none; }
-.cartBadge {
-  position: absolute; top: -6px; right: -8px;
-  background: var(--color-primario); color: #fff;
-  font-size: .65rem; font-weight: 700;
-  min-width: 18px; height: 18px; border-radius: 999px;
-  display: flex; align-items: center; justify-content: center; padding: 0 4px;
-}
-.admBtn {
-  display: flex; align-items: center; gap: 4px;
-  font-size: .75rem; font-weight: 700;
-  color: var(--color-primario);
-  border: 1.5px solid var(--color-primario); border-radius: 999px;
-  padding: 4px 10px; text-decoration: none;
+
+.cartBtn {
+  position: relative;
+  color: var(--color-texto);
+  display: flex;
+  text-decoration: none;
 }
 
-/* ---------- COMPACTO MOBILE (al scrollear) ---------- */
-.navbarCompacto { padding: 6px 12px; }
-.navbarCompacto .logoImg { height: 28px; }
-.navbarCompacto .logoIcon { width: 26px; height: 26px; border-radius: 7px; }
-.navbarCompacto .logoText { font-size: .85rem; }
+.cartBadge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: var(--color-primario);
+  color: #fff;
+  font-size: .65rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.admBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: .75rem;
+  font-weight: 700;
+  color: var(--color-primario);
+  border: 1.5px solid var(--color-primario);
+  border-radius: 999px;
+  padding: 4px 10px;
+  text-decoration: none;
+}
 
 /* ---------- DRAWER (mobile) ---------- */
-.overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, .4); z-index: 60; }
-.drawer {
-  position: fixed; top: 0; left: 0; bottom: 0;
-  width: 75vw; max-width: 300px;
-  background: #fff; z-index: 70; padding: 16px;
-  overflow-y: auto; display: flex; flex-direction: column; gap: 2px;
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .4);
+  z-index: 60;
 }
-.drawerHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 75vw;
+  max-width: 300px;
+  background: #fff;
+  z-index: 70;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.drawerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
 .drawerTitle { font-weight: 800; }
-.cerrar { background: none; border: none; color: var(--color-texto); display: flex; }
-.drawerLink { text-decoration: none; color: var(--color-texto); font-weight: 600; padding: 10px 8px; border-radius: 10px; }
+
+.cerrar {
+  background: none;
+  border: none;
+  color: var(--color-texto);
+  display: flex;
+}
+
+.drawerLink {
+  text-decoration: none;
+  color: var(--color-texto);
+  font-weight: 600;
+  padding: 10px 8px;
+  border-radius: 10px;
+}
+
 .drawerLink:hover { background: var(--color-fondo); }
-.drawerSub { font-size: .72rem; text-transform: uppercase; color: var(--color-texto-suave); margin: 10px 0 2px 8px; }
+
+.drawerSub {
+  font-size: .72rem;
+  text-transform: uppercase;
+  color: var(--color-texto-suave);
+  margin: 10px 0 2px 8px;
+}
+
+/* ---------- BUSCADOR ---------- */
+.buscarForm {
+  display: none;
+  position: relative;
+  flex: 1;
+  max-width: 260px;
+  margin-right: 12px;
+}
+
+.buscarInput {
+  width: 100%;
+  padding: 8px 36px 8px 14px;
+  border: 1.5px solid var(--color-borde);
+  border-radius: 999px;
+  font-size: .85rem;
+  background: #f9fafb;
+  box-sizing: border-box;
+  transition: border-color .2s, background .2s;
+}
+
+.buscarInput:focus {
+  outline: none;
+  border-color: var(--color-primario);
+  background: #fff;
+}
+
+.buscarBtn {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--color-texto-suave);
+  display: flex;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.buscarBtn:hover { color: var(--color-primario); }
+
+/* ---------- MOBILE: sin superposiciones ---------- */
+@media (max-width: 767px) {
+  .hamburguesa {
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+  }
+
+  .logo {
+    position: static;
+    transform: none;
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+    z-index: 1;
+  }
+
+  .actions {
+    position: relative;
+    z-index: 2;
+    flex-shrink: 0;
+  }
+}
 
 /* ---------- DESKTOP ---------- */
 .navDesktop { display: none; }
 
 @media (min-width: 768px) {
-  .navbar { flex-wrap: wrap; padding: 12px 24px; }
-  .hamburguesa { display: none; }
+  .navbar {
+    flex-wrap: wrap;
+    padding: 12px 24px;
+  }
 
-  /* Logo centrado estilo SKM */
+  .hamburguesa { display: none; }
+  .buscarForm { display: block; }
+
   .logo {
     flex: 0 1 auto;
-    border: none; outline: none; text-decoration: none;
-    position: absolute; left: 50%; transform: translateX(-50%); top: 10px;
+    border: none;
+    outline: none;
+    text-decoration: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 10px;
     transition: top .25s ease;
   }
 
-  /* Carrito + adm a la derecha */
   .actions { margin-left: auto; }
 
-  /* Menú horizontal de secciones */
   .navDesktop {
-    display: flex; gap: 28px;
-    width: 100%; justify-content: center;
-    padding-top: 12px; order: 3;
+    display: flex;
+    gap: 28px;
+    width: 100%;
+    justify-content: center;
+    padding-top: 12px;
+    order: 3;
     transition: padding-top .25s ease, gap .25s ease;
   }
+
   .navDesktopLink {
-    text-decoration: none; color: var(--color-texto);
-    font-size: .78rem; font-weight: 700;
-    text-transform: uppercase; letter-spacing: .6px;
+    text-decoration: none;
+    color: var(--color-texto);
+    font-size: .78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .6px;
   }
+
   .navDesktopLink:hover { color: var(--color-primario); }
 
-  /* Compacto desktop (al scrollear) */
   .navbarCompacto { padding: 8px 24px; }
   .navbarCompacto .logo { top: 6px; }
   .navbarCompacto .logoImg { height: 28px; }
   .navbarCompacto .navDesktop { padding-top: 8px; gap: 22px; }
+}
+
+/* ---------- MOBILE COMPACTO (al scrollear) ---------- */
+@media (max-width: 767px) {
+  .navbarCompacto { padding: 6px 12px; }
+  .navbarCompacto .logoImg { height: 28px; }
+  .navbarCompacto .logoIcon { width: 26px; height: 26px; border-radius: 7px; }
+  .navbarCompacto .logoText { font-size: .85rem; }
 }

@@ -134,3 +134,63 @@ export const updateConfigLocal = async (patch) => {
   if (error) throw error
   return { data }
 }
+
+export const aprobarMasivoWeb = async (ids, { webCategoria, descripcion }) => {
+  const { data, error } = await supabase
+    .from('productos')
+    .update({
+      web_estado: 'publicado',
+      web_categoria: webCategoria,
+      web_descripcion: descripcion?.trim() || null,
+      web_destacado: false,
+      web_nota_rechazo: null,
+      web_aprobado_en: new Date().toISOString()
+    })
+    .in('id', ids)
+    .eq('local_id', LOCAL_ID)
+
+  if (error) throw error
+  return { data }
+}
+
+export const editarPublicadoWeb = async (productoId, { descripcion, fotos, destacado, precioWeb, webCategoria }) => {
+  const { data, error } = await supabase
+    .from('productos')
+    .update({
+      web_categoria: webCategoria || null,
+      web_descripcion: descripcion || null,
+      web_fotos: fotos || [],
+      web_destacado: destacado || false,
+      web_precio: precioWeb ?? null
+    })
+    .eq('id', productoId)
+    .eq('local_id', LOCAL_ID)
+  if (error) throw error
+  return { data }
+}
+
+export const buscarProductosWeb = async (query) => {
+  const q = query.trim()
+  // Plural/singular: "remeras" también prueba "remera"
+  const variantes = [q]
+  if (q.toLowerCase().endsWith('s')) variantes.push(q.slice(0, -1))
+
+  const ors = variantes
+    .flatMap(v => [
+      `nombre.ilike.%${v}%`,
+      `web_descripcion.ilike.%${v}%`,
+      `categoria.ilike.%${v}%`,
+      `web_categoria.ilike.%${v}%`
+    ])
+    .join(',')
+
+  const { data, error } = await supabase
+    .from('productos')
+    .select('*')
+    .eq('web_estado', 'publicado')
+    .eq('local_id', LOCAL_ID)
+    .or(ors)
+    .order('web_aprobado_en', { ascending: false })
+  if (error) throw error
+  return { data }
+}

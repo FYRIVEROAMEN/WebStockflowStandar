@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
+import { getConfigLocal } from '../services/api'
+import { optimizeImage } from '../utils/image'
 import styles from './BannerPromo.module.css'
 
 const BANNERS = [
@@ -10,17 +12,26 @@ const BANNERS = [
 export default function BannerPromo() {
   const trackRef = useRef(null)
   const [activo, setActivo] = useState(0)
+  const [propios, setPropios] = useState([])
+
+  useEffect(() => {
+    getConfigLocal()
+      .then(({ data }) => setPropios(data?.hero_slides || []))
+      .catch(() => {})
+  }, [])
+
+  const items = propios.length > 0 ? propios : BANNERS
 
   useEffect(() => {
     const el = trackRef.current
     if (!el) return
     const onScroll = () => {
       const i = Math.round(el.scrollLeft / el.clientWidth)
-      setActivo(Math.max(0, Math.min(BANNERS.length - 1, i)))
+      setActivo(Math.max(0, Math.min(items.length - 1, i)))
     }
     el.addEventListener('scroll', onScroll, { passive: true })
     return () => el.removeEventListener('scroll', onScroll)
-  }, [])
+  }, [items.length])
 
   const mover = (dir) => {
     const el = trackRef.current
@@ -35,10 +46,16 @@ export default function BannerPromo() {
       </button>
 
       <div className={styles.track} ref={trackRef}>
-        {BANNERS.map(b => (
-          <div key={b.titulo} className={`${styles.banner} ${styles[b.clase]}`}>
+        {items.map((b, i) => (
+          <div key={b.id || i} className={`${styles.banner} ${b.clase ? styles[b.clase] : ''}`}>
+            {b.imageUrl && (
+              <>
+                <img src={optimizeImage(b.imageUrl, 1200)} alt="" className={styles.bannerImg} />
+                <div className={styles.bannerOverlay} />
+              </>
+            )}
             <p className={styles.titulo}>{b.titulo}</p>
-            <p className={styles.sub}>{b.sub}</p>
+            <p className={styles.sub}>{b.sub || b.subtitulo}</p>
           </div>
         ))}
       </div>
@@ -48,7 +65,7 @@ export default function BannerPromo() {
       </button>
 
       <div className={styles.dots}>
-        {BANNERS.map((_, i) => (
+        {items.map((_, i) => (
           <span key={i} className={`${styles.dot} ${i === activo ? styles.dotActivo : ''}`} />
         ))}
       </div>

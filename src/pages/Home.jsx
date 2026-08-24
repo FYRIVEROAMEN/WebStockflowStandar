@@ -80,11 +80,11 @@ export default function Home() {
 
   return (
     <div className={styles.home}>
-      <BarraAnuncio />
-      <BannerPromo />
+       <BarraAnuncio /> 
+      <BannerPromo /> 
 
       {/* 3 cards de secciones (patrón SKM: NEW COLLECTION / FINAL SALE / CONJUNTOS) */}
-      {!loading && secciones.length > 0 && (
+        {!loading && secciones.length > 0 && (
         <div className={styles.promos}>
                     {secciones.slice(0, 4).map((sec, i) => (
             <Link
@@ -100,7 +100,7 @@ export default function Home() {
             </Link>
           ))}
         </div>
-      )}
+      )}  
 
       {loading ? (
         <p className={styles.vacio}>Cargando catálogo...</p>

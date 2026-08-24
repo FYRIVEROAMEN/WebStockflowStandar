@@ -82,7 +82,13 @@ export default function Producto() {
         <div>
           <div className={styles.fotoBox}>
             {fotos.length > 0 ? (
-              <img src={optimizeImage(fotos[fotoActual], 1200)} alt={producto.nombre} className={styles.foto} />
+              <img
+                src={optimizeImage(fotos[fotoActual], 1200)}
+                alt={producto.nombre}
+                className={styles.foto}
+                loading="lazy"
+                decoding="async"
+              />
             ) : (
               <div className={styles.sinFoto}>🛍️</div>
             )}
@@ -96,7 +102,12 @@ export default function Producto() {
                   className={`${styles.thumb} ${i === fotoActual ? styles.thumbActiva : ''}`}
                   onClick={() => setFotoActual(i)}
                 >
-                  <img src={optimizeImage(f, 150)} alt={`${producto.nombre} ${i + 1}`} />
+                  <img
+                    src={optimizeImage(f, 150)}
+                    alt={`${producto.nombre} ${i + 1}`}
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </button>
               ))}
             </div>

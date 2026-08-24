@@ -1,9 +1,24 @@
-body {
-  margin: 0;
-  overflow-x: hidden; /* evita scroll fantasma del truco 100vw */
+/* =========================================
+   BASE
+   ========================================= */
+
+   #root, .app-shell {
+  overflow-x: clip;
 }
 
-/* Toast de carrito */
+
+html, body {
+  margin: 0;
+  overflow-x: clip;             /* corta el desborde 100vw sin romper sticky */
+  overscroll-behavior-y: none;  /* mata el rebote Android al llegar al tope */
+  overflow-anchor: none;        /* 🔑 mata la compensación de scroll que
+                                   des sincroniza el navbar cuando cargan
+                                   imágenes grandes (CLS de las cards) */
+}
+
+/* =========================================
+   TOAST DE CARRITO
+   ========================================= */
 .cart-toast {
   position: fixed;
   bottom: 84px;
@@ -22,21 +37,32 @@ body {
   animation: toast-in .25s ease-out;
   pointer-events: none;
 }
+
 .cart-toast-check {
   width: 22px; height: 22px; border-radius: 50%;
   background: #16a34a; color: #fff;
   display: flex; align-items: center; justify-content: center;
   font-size: 12px; font-weight: 700; flex-shrink: 0;
 }
-.cart-toast-nombre { font-size: .85rem; font-weight: 700; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60vw; }
+
+.cart-toast-nombre {
+  font-size: .85rem; font-weight: 700; margin: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 60vw;
+}
+
 .cart-toast-detalle { font-size: .7rem; color: #9ca3af; margin: 0; }
+
 @keyframes toast-in {
   from { opacity: 0; transform: translateX(-50%) translateY(12px) scale(.9); }
   to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
 }
 
-/* Pop del contador del navbar */
+/* =========================================
+   POP DEL CONTADOR DEL NAVBAR
+   ========================================= */
 .nav-cart-pop { animation: pop .3s ease-out; display: inline-block; }
+
 @keyframes pop {
   0% { transform: scale(1); }
   40% { transform: scale(1.45); }

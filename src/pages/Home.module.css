@@ -1,11 +1,12 @@
-/* ---------- MOBILE: full-bleed (edge-to-edge como SKM) ---------- */
+/* ---------- MOBILE: full-bleed contenido (sin overflow del documento) ---------- */
 .home { max-width: 700px; margin: 0 auto; padding: 0 0 16px; }
 
 /* ---------- 3 cards de secciones (patrón SKM) ---------- */
 .promos {
   display: flex; gap: 10px;
   overflow-x: auto;
-  margin: 0 -12px; padding: 16px 12px 4px;
+  margin: 0;                    /* sin margen negativo: no ensancha el documento */
+  padding: 16px 12px 4px;
   scrollbar-width: none;
 }
 .promos::-webkit-scrollbar { display: none; }
@@ -43,12 +44,12 @@
 /* Grilla de 2 columnas (pocos productos / destacados) */
 .grilla { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 
-/* Carrusel full-bleed: rompe el padding de la sección, el scroll toca el borde */
+/* Carrusel: scroll horizontal CONTENIDO, no saca al documento */
 .carrusel {
   display: flex; gap: 10px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  margin: 0 -12px;
+  margin: 0;                    /* sin margen negativo */
   padding: 0 12px 8px;
   scrollbar-width: none;
 }
@@ -75,7 +76,7 @@
   .grilla { grid-template-columns: repeat(4, 1fr); }
   .carruselItem { flex: 0 0 23.5%; }
   .titulo { font-size: 1.4rem; }
-  
+
   /* 3 cards en grilla 3 columnas */
   .promos { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin: 0; padding: 24px 0 0; overflow: visible; }
   .promo { flex: none; min-height: 300px; }

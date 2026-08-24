@@ -1,0 +1,31 @@
+.buscar { max-width: 1080px; margin: 0 auto; padding: 24px 12px; }
+
+.header { margin-bottom: 20px; }
+.titulo { font-size: 1.3rem; font-weight: 800; margin: 0; color: var(--color-texto); }
+.sub { font-size: .85rem; color: var(--color-texto-suave); margin: 4px 0 0; }
+
+.vacio { text-align: center; color: var(--color-texto-suave); padding: 40px 0; }
+
+.sinResultados { text-align: center; padding: 60px 20px; }
+.sinEmoji { font-size: 3rem; margin: 0 0 12px; }
+.sinTitulo { font-size: 1.1rem; font-weight: 700; margin: 0 0 6px; color: var(--color-texto); }
+.sinSub { font-size: .85rem; color: var(--color-texto-suave); margin: 0 0 16px; }
+.volver {
+  display: inline-block;
+  color: var(--color-primario);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: .9rem;
+}
+
+.grilla {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (min-width: 768px) {
+  .grilla { grid-template-columns: repeat(4, 1fr); }
+  .titulo { font-size: 1.6rem; }
+}
+

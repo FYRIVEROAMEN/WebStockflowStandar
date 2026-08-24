@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Check, X, Upload, Trash2, ArrowLeft } from 'lucide-react'
+import { Check, X, Upload, Trash2, ArrowLeft, Pencil, Save } from 'lucide-react'
 import toast from 'react-hot-toast'
 import {
   getPendientesWeb, getPublicadosWeb,
-  aprobarProductoWeb, rechazarProductoWeb, quitarDeWeb
+  aprobarProductoWeb, rechazarProductoWeb, quitarDeWeb,
+  aprobarMasivoWeb, editarPublicadoWeb
 } from '../services/api'
 import { optimizeImage } from '../utils/image'
 import { useLocal } from '../context/LocalContext'
@@ -22,11 +23,16 @@ export default function Admin() {
   const [publicados, setPublicados] = useState([])
   const [loading, setLoading] = useState(true)
   const [editando, setEditando] = useState(null)
-const [form, setForm] = useState({ descripcion: '', precioWeb: '', destacado: false, fotos: [], webCategoria: '' })
+  const [form, setForm] = useState({ descripcion: '', precioWeb: '', destacado: false, fotos: [], webCategoria: '' })
   const [subiendo, setSubiendo] = useState(false)
   const [quitando, setQuitando] = useState(null)
   const [rechazando, setRechazando] = useState(null)
   const [notaRechazo, setNotaRechazo] = useState('')
+  const [filtroCat, setFiltroCat] = useState('')
+  const [seleccion, setSeleccion] = useState([])
+  const [catDestino, setCatDestino] = useState('')
+  const [descMasiva, setDescMasiva] = useState('')
+  const [aprobandoMasivo, setAprobandoMasivo] = useState(false)
 
   const cargar = async () => {
     setLoading(true)
@@ -43,6 +49,45 @@ const [form, setForm] = useState({ descripcion: '', precioWeb: '', destacado: fa
   useEffect(() => {
     if (autorizado) cargar()
   }, [autorizado])
+
+  const catsLibres = [...new Set(pendientes.map(p => (p.categoria || '').trim()).filter(Boolean))]
+
+  const pendientesFiltrados = filtroCat
+    ? pendientes.filter(p => (p.categoria || '').toLowerCase() === filtroCat.toLowerCase())
+    : pendientes
+
+  const toggleSel = (id) => {
+    setSeleccion(s => s.includes(id) ? s.filter(x => x !== id) : [...s, id])
+  }
+
+  const toggleTodos = () => {
+    const idsFiltrados = pendientesFiltrados.map(p => p.id)
+    const todosSel = idsFiltrados.every(id => seleccion.includes(id))
+    if (todosSel) {
+      setSeleccion(seleccion.filter(id => !idsFiltrados.includes(id)))
+    } else {
+      setSeleccion([...new Set([...seleccion, ...idsFiltrados])])
+    }
+  }
+
+  const aprobarMasivo = async () => {
+    if (!catDestino) return toast('Elegí a qué categoría mandarlos', { icon: '⚠️' })
+    setAprobandoMasivo(true)
+    try {
+      await aprobarMasivoWeb(seleccion, {
+        webCategoria: catDestino,
+        descripcion: descMasiva
+      })
+      toast.success(`${seleccion.length} productos publicados en ${catDestino}`)
+      setSeleccion([])
+      setCatDestino('')
+      setDescMasiva('')
+      cargar()
+    } catch (err) {
+      toast.error('Error en aprobación masiva: ' + err.message)
+    }
+    setAprobandoMasivo(false)
+  }
 
   const entrar = () => {
     if (codigo === (import.meta.env.VITE_ADMIN_CODE || 'stockflow2026')) {
@@ -90,7 +135,7 @@ const [form, setForm] = useState({ descripcion: '', precioWeb: '', destacado: fa
   }
 
   const aprobar = async () => {
-        if (!form.webCategoria) {
+    if (!form.webCategoria) {
       toast('Elegí una categoría para publicar', { icon: '⚠️' })
       return
     }
@@ -107,6 +152,27 @@ const [form, setForm] = useState({ descripcion: '', precioWeb: '', destacado: fa
       toast.success('¡Publicado!')
     } catch (err) {
       toast.error('Error al aprobar: ' + err.message)
+    }
+  }
+
+  const guardarEdicion = async () => {
+    if (!form.webCategoria) {
+      toast('Elegí una categoría para publicar', { icon: '⚠️' })
+      return
+    }
+    try {
+      await editarPublicadoWeb(editando.id, {
+        descripcion: form.descripcion,
+        fotos: form.fotos,
+        destacado: form.destacado,
+        precioWeb: form.precioWeb === '' ? null : Number(form.precioWeb),
+        webCategoria: form.webCategoria
+      })
+      setEditando(null)
+      cargar()
+      toast.success('Cambios guardados')
+    } catch (err) {
+      toast.error('Error al guardar: ' + err.message)
     }
   }
 
@@ -152,17 +218,18 @@ const [form, setForm] = useState({ descripcion: '', precioWeb: '', destacado: fa
   }
 
   if (editando) {
+    const esEdicion = editando.web_estado === 'publicado'
     return (
       <div className={styles.wrap}>
         <button className={styles.volver} onClick={() => setEditando(null)}><ArrowLeft size={16} /> Volver</button>
-        <h2 className={styles.titulo}>Aprobar: {editando.nombre}</h2>
+        <h2 className={styles.titulo}>{esEdicion ? 'Editar' : 'Aprobar'}: {editando.nombre}</h2>
 
         <div className={styles.fotoPrincipal}>
           <img src={optimizeImage(editando.imagen_url, 600)} alt={editando.nombre} />
         </div>
 
         <label className={styles.label}>Sección de la vidriera (obligatoria) *</label>
-         {(config.categoriasWeb || []).length > 0 ? (
+        {(config.categoriasWeb || []).length > 0 ? (
           <select
             className={styles.input}
             value={form.webCategoria}
@@ -173,7 +240,7 @@ const [form, setForm] = useState({ descripcion: '', precioWeb: '', destacado: fa
           </select>
         ) : (
           <p style={{ fontSize: '.75rem', color: '#dc2626' }}>
-            No hay secciones creadas. Crealas en ⚙️ Mi vidriera → "Secciones de la vidriera".
+            No hay secciones creadas. Crealas en ⚙️ Mi vidriera → "Categorías del Catálogo".
           </p>
         )}
 
@@ -227,7 +294,15 @@ const [form, setForm] = useState({ descripcion: '', precioWeb: '', destacado: fa
           )}
         </div>
 
-        <button className={styles.aprobarBtn} onClick={aprobar}><Check size={18} /> Aprobar y publicar</button>
+        {esEdicion ? (
+          <button className={styles.aprobarBtn} onClick={guardarEdicion}>
+            <Save size={18} /> Guardar cambios
+          </button>
+        ) : (
+          <button className={styles.aprobarBtn} onClick={aprobar}>
+            <Check size={18} /> Aprobar y publicar
+          </button>
+        )}
       </div>
     )
   }
@@ -254,7 +329,7 @@ const [form, setForm] = useState({ descripcion: '', precioWeb: '', destacado: fa
     )
   }
 
-  const lista = tab === 'pendientes' ? pendientes : publicados
+  const lista = tab === 'pendientes' ? pendientesFiltrados : publicados
 
   return (
     <div className={styles.wrap}>
@@ -271,40 +346,128 @@ const [form, setForm] = useState({ descripcion: '', precioWeb: '', destacado: fa
         </button>
       </div>
 
+      {tab === 'pendientes' && catsLibres.length > 0 && (
+        <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+          <select
+            className={styles.input}
+            style={{ flex: '1 1 auto', minWidth: 140 }}
+            value={filtroCat}
+            onChange={e => { setFiltroCat(e.target.value); setSeleccion([]) }}
+          >
+            <option value="">Todas las categorías ({pendientes.length})</option>
+            {catsLibres.map(c => {
+              const n = pendientes.filter(p => (p.categoria || '').toLowerCase() === c.toLowerCase()).length
+              return <option key={c} value={c}>{c} ({n})</option>
+            })}
+          </select>
+          {filtroCat && pendientesFiltrados.length > 0 && (
+            <button
+              onClick={toggleTodos}
+              style={{
+                padding: '10px 14px', borderRadius: 8, border: '1.5px solid var(--color-borde)',
+                background: '#fff', fontSize: '.8rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap'
+              }}
+            >
+              {pendientesFiltrados.every(p => seleccion.includes(p.id)) ? 'Desmarcar todos' : 'Marcar todos'}
+            </button>
+          )}
+        </div>
+      )}
+
       {loading ? (
         <p className={styles.vacio}>Cargando...</p>
       ) : lista.length === 0 ? (
         <p className={styles.vacio}>
-          {tab === 'pendientes' ? 'No hay productos esperando aprobación 🎉' : 'Todavía no publicaste nada.'}
+          {tab === 'pendientes'
+            ? (filtroCat ? `No hay pendientes en "${filtroCat}"` : 'No hay productos esperando aprobación 🎉')
+            : 'Todavía no publicaste nada.'}
         </p>
       ) : (
         <div className={styles.lista}>
-          {lista.map(p => (
-            <div key={p.id} className={styles.item}>
-              <img src={optimizeImage(p.imagen_url, 150)} alt={p.nombre} className={styles.itemImg} />
-              <div className={styles.itemInfo}>
-                <p className={styles.itemNombre}>{p.nombre}</p>
-                <p className={styles.itemMeta}>{p.categoria} · ${Number(p.precio).toLocaleString('es-AR')} · stock {p.stock}</p>
-                {tab === 'pendientes' && p.web_enviado_en && (
-                  <p className={styles.itemMeta}>Enviado: {new Date(p.web_enviado_en).toLocaleDateString('es-AR')}</p>
+          {lista.map(p => {
+            const estaSel = seleccion.includes(p.id)
+            return (
+              <div key={p.id} className={styles.item} style={estaSel ? { background: '#eff6ff' } : {}}>
+                {tab === 'pendientes' && (
+                  <label style={{ display: 'flex', alignItems: 'center', marginRight: 6, cursor: 'pointer', flexShrink: 0 }}>
+                    <input
+                      type="checkbox"
+                      checked={estaSel}
+                      onChange={() => toggleSel(p.id)}
+                      style={{ width: 18, height: 18, cursor: 'pointer' }}
+                    />
+                  </label>
                 )}
+                <img src={optimizeImage(p.imagen_url, 150)} alt={p.nombre} className={styles.itemImg} />
+                <div className={styles.itemInfo}>
+                  <p className={styles.itemNombre}>{p.nombre}</p>
+                  <p className={styles.itemMeta}>{p.categoria} · ${Number(p.precio).toLocaleString('es-AR')} · stock {p.stock}</p>
+                  {tab === 'pendientes' && p.web_enviado_en && (
+                    <p className={styles.itemMeta}>Enviado: {new Date(p.web_enviado_en).toLocaleDateString('es-AR')}</p>
+                  )}
+                </div>
+                <div className={styles.itemAcciones}>
+                  {tab === 'pendientes' ? (
+                    <>
+                      <button className={styles.btnAprobar} onClick={() => abrirEdicion(p)} title="Aprobar y enriquecer"><Check size={16} /></button>
+                      <button className={styles.btnRechazar} onClick={() => { setRechazando(p); setNotaRechazo('') }} title="Rechazar con nota"><X size={16} /></button>
+                    </>
+                  ) : (
+                    <>
+                      <button className={styles.btnAprobar} onClick={() => abrirEdicion(p)} title="Editar"><Pencil size={16} /></button>
+                      <button className={styles.btnQuitar} onClick={() => setQuitando(p)} title="Quitar de la web"><X size={16} /></button>
+                    </>
+                  )}
+                </div>
               </div>
-              <div className={styles.itemAcciones}>
-                {tab === 'pendientes' ? (
-                  <>
-                    <button className={styles.btnAprobar} onClick={() => abrirEdicion(p)} title="Aprobar y enriquecer"><Check size={16} /></button>
-                    <button className={styles.btnRechazar} onClick={() => { setRechazando(p); setNotaRechazo('') }} title="Rechazar con nota"><X size={16} /></button>
-                  </>
-                ) : (
-                  <button className={styles.btnQuitar} onClick={() => setQuitando(p)} title="Quitar de la web"><X size={16} /></button>
-                )}
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
 
-      {/* Modal de quitar */}
+      {tab === 'pendientes' && seleccion.length > 0 && (
+        <div style={{
+          position: 'sticky', bottom: 0, marginTop: 16,
+          background: '#fff', border: '1.5px solid #2563eb', borderRadius: 12,
+          padding: 12, display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap',
+          boxShadow: '0 -4px 16px rgba(0,0,0,.08)'
+        }}>
+          <span style={{ fontSize: '.85rem', fontWeight: 700, color: '#2563eb' }}>
+            {seleccion.length} seleccionado{seleccion.length === 1 ? '' : 's'}
+          </span>
+          <select
+            className={styles.input}
+            style={{ flex: '1 1 auto', minWidth: 120, margin: 0 }}
+            value={catDestino}
+            onChange={e => setCatDestino(e.target.value)}
+          >
+            <option value="">Mandar a...</option>
+            {(config.categoriasWeb || []).map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <button
+            onClick={aprobarMasivo}
+            disabled={aprobandoMasivo}
+            style={{
+              padding: '10px 18px', border: 'none', borderRadius: 8,
+              background: '#16a34a', color: '#fff', fontWeight: 700,
+              fontSize: '.85rem', cursor: aprobandoMasivo ? 'wait' : 'pointer',
+              display: 'flex', alignItems: 'center', gap: 6
+            }}
+          >
+            <Check size={16} /> {aprobandoMasivo ? 'Publicando...' : 'Publicar todos'}
+          </button>
+          <button
+            onClick={() => setSeleccion([])}
+            style={{
+              padding: '10px 12px', border: '1px solid #e5e7eb', borderRadius: 8,
+              background: '#fff', fontSize: '.8rem', cursor: 'pointer'
+            }}
+          >
+            Limpiar
+          </button>
+        </div>
+      )}
+
       {quitando && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalBox}>
@@ -318,7 +481,6 @@ const [form, setForm] = useState({ descripcion: '', precioWeb: '', destacado: fa
         </div>
       )}
 
-      {/* Modal de rechazo */}
       {rechazando && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalBox}>
