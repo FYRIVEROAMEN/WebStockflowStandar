@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getConfigLocal } from '../services/api'
 import { optimizeImage } from '../utils/image'
 import styles from './BannerPromo.module.css'
@@ -10,6 +11,7 @@ const BANNERS = [
 ]
 
 export default function BannerPromo() {
+  const navigate = useNavigate()
   const trackRef = useRef(null)
   const [activo, setActivo] = useState(0)
   const [propios, setPropios] = useState([])
@@ -21,6 +23,7 @@ export default function BannerPromo() {
   }, [])
 
   const items = propios.length > 0 ? propios : BANNERS
+  const esDefault = propios.length === 0
 
   useEffect(() => {
     const el = trackRef.current
@@ -56,6 +59,18 @@ export default function BannerPromo() {
             )}
             <p className={styles.titulo}>{b.titulo}</p>
             <p className={styles.sub}>{b.sub || b.subtitulo}</p>
+
+            {/* ✚ CTA DENTRO del primer slide default:
+                queda clavado sobre el banner en CUALQUIER dispositivo */}
+            {esDefault && i === 0 && (
+              <button
+                className={styles.cta}
+                onClick={() => navigate('/admin?tab=vidriera')}
+              >
+                <span className={styles.ctaTitulo}>✚ Tu banner personalizable</span>
+                <span className={styles.ctaSub}>Hasta 3 slides con tus fotos y textos · tocá para crearlo</span>
+              </button>
+            )}
           </div>
         ))}
       </div>

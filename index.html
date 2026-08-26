@@ -1,12 +1,38 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    
+    <!-- ========== SEO BASE ========== -->
+    <title>StockFlow — Tu tienda online</title>
+    <meta name="description" content="Tienda online con envío a domicilio. Productos seleccionados, precios competitivos y atención personalizada por WhatsApp." />
+    <meta name="theme-color" content="#111827" />
+    <meta name="robots" content="index, follow" />
+    
+    <!-- ========== OPEN GRAPH (WhatsApp, Facebook, Telegram) ========== -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="StockFlow — Tu tienda online" />
+    <meta property="og:description" content="Productos seleccionados, precios competitivos y atención personalizada por WhatsApp." />
+    <meta property="og:image" content="https://res.cloudinary.com/dyourcloud/image/upload/v1/stockflow-default.jpg" />
+    <meta property="og:site_name" content="StockFlow" />
+    <meta property="og:locale" content="es_AR" />
+    
+    <!-- ========== TWITTER CARDS ========== -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="StockFlow — Tu tienda online" />
+    <meta name="twitter:description" content="Productos seleccionados y atención por WhatsApp." />
+    <meta name="twitter:image" content="https://res.cloudinary.com/dyourcloud/image/upload/v1/stockflow-default.jpg" />
+    
+    <!-- ========== FAVICON ========== -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>stockflow-web</title>
-    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-<script>eruda.init()</script>
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    
+    <!-- ========== PERFORMANCE ========== -->
+    <link rel="preconnect" href="https://res.cloudinary.com" />
+    <link rel="preconnect" href="https://api.cloudinary.com" />
+    
+    <!-- ⚠️ ERUDA REMOVIDA (debug deshabilitado en producción) -->
   </head>
   <body>
     <div id="root"></div>

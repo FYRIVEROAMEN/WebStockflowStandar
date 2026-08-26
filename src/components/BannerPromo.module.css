@@ -1,7 +1,10 @@
+/* ---------- CONTENEDOR FULL-BLEED ---------- */
 .wrap {
   width: 100vw;
-  margin-left: calc(50% - 50vw); /* rompe el container y toca los bordes */
+  margin-left: calc(50% - 50vw);
 }
+
+/* ---------- TRACK DE SLIDES ---------- */
 .track {
   display: flex;
   overflow-x: auto;
@@ -9,108 +12,174 @@
   scrollbar-width: none;
 }
 .track::-webkit-scrollbar { display: none; }
+
+/* ---------- SLIDE BASE ---------- */
 .banner {
+  position: relative;
+  overflow: hidden;
   flex: 0 0 100%;
-  min-height: 170px;
   scroll-snap-align: center;
-  padding: 20px;
-  display: flex; flex-direction: column; justify-content: center;
-  color: #fff;
-  border-radius: 0; /* full-bleed en todos los viewports */
-}
-.b1 { background: linear-gradient(120deg, #4f46e5, #7c3aed); }
-.b2 { background: linear-gradient(120deg, #e11d48, #f97316); }
-.b3 { background: linear-gradient(120deg, #0ea5e9, #22c55e); }
-.titulo { font-size: 1.3rem; font-weight: 800; margin: 0 0 6px; }
-.sub { font-size: .85rem; opacity: .9; margin: 0; }
-.dots { display: flex; justify-content: center; gap: 6px; margin-top: 8px; }
-.dot { width: 7px; height: 7px; border-radius: 50%; background: #d1d5db; transition: all .2s; }
-.dotActivo { background: #2563eb; width: 18px; border-radius: 999px; }
-
-@media (min-width: 768px) {
-  .banner { min-height: 340px; padding: 48px; }
-  .titulo { font-size: 2.2rem; }
-  .sub { font-size: 1rem; }
-}
-
-.flecha { display: none; }
-
-@media (min-width: 768px) {
-  .wrap { position: relative; }
-  .flecha {
-    display: flex; align-items: center; justify-content: center;
-    position: absolute; top: 50%; transform: translateY(-50%);
-    width: 44px; height: 44px; border-radius: 50%;
-    border: none;
-    background: rgba(17, 24, 39, .55); color: #fff;
-    font-size: 1.5rem; line-height: 1;
-    cursor: pointer; z-index: 5;
-    transition: background .2s;
-  }
-  .flecha:hover { background: rgba(17, 24, 39, .85); }
-  .flechaIzq { left: 16px; }
-  .flechaDer { right: 16px; }
-}
-@media (max-width: 767px) {
-  .flechaIzq, .flechaDer { display: none; }
-}
-
-/* ---------- SLIDES CON IMAGEN DEL DUEÑO ---------- */
-.banner { position: relative; overflow: hidden; }
-
-.bannerImg {
-  position: absolute; inset: 0;
-  width: 100%; height: 100%;
-  object-fit: cover;
-  transition: transform .6s ease, filter .6s ease;
-}
-
-.bannerOverlay {
-  position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,.15) 60%, rgba(0,0,0,.05));
-}
-
-.titulo, .sub { position: relative; z-index: 1; }
-
-/* Efecto blur + zoom al pasar el mouse (solo desktop) */
-@media (min-width: 768px) {
-  .banner:hover .bannerImg {
-    transform: scale(1.06);
-    filter: blur(2px) brightness(.92);
-  }
-}
-
-/* ---------- ESTANDARIZACIÓN DEL HERO (pisa todo lo anterior) ---------- */
-.banner {
   aspect-ratio: 16 / 9;
   min-height: 200px;
   padding: 20px;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+  color: #fff;
+  border-radius: 0;
 }
 
-.bannerImg { object-position: center; }
+/* Colores de los banners por defecto */
+.b1 { background: linear-gradient(120deg, #4f46e5, #7c3aed); }
+.b2 { background: linear-gradient(120deg, #e11d48, #f97316); }
+.b3 { background: linear-gradient(120deg, #0ea5e9, #22c55e); }
 
-/* Texto en zona segura: nunca se corta */
+/* ---------- IMAGEN DEL DUEÑO + OVERLAY ---------- */
+.bannerImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform .6s ease, filter .6s ease;
+}
+
+.bannerOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.55), rgba(0,0,0,.15) 60%, rgba(0,0,0,.05));
+}
+
+/* ---------- TEXTO (zona segura) ---------- */
 .titulo {
+  position: relative;
+  z-index: 1;
   font-size: clamp(1.4rem, 5vw, 2.4rem);
+  font-weight: 800;
   max-width: 85%;
   overflow-wrap: break-word;
   margin: 0 0 4px;
 }
 
 .sub {
+  position: relative;
+  z-index: 1;
+  font-size: .85rem;
+  opacity: .9;
   max-width: 85%;
   margin: 0;
 }
 
+/* ---------- DOTS ---------- */
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d1d5db;
+  transition: all .2s;
+}
+.dotActivo {
+  background: #2563eb;
+  width: 18px;
+  border-radius: 999px;
+}
+
+/* ---------- FLECHAS (solo desktop) ---------- */
+.flecha { display: none; }
+
+/* ---------- DESKTOP ---------- */
 @media (min-width: 768px) {
+  .wrap { position: relative; }
+
   .banner {
     aspect-ratio: 21 / 9;
     max-height: 460px;
     padding: 32px 48px;
   }
+
+  .sub { font-size: 1rem; }
+
+  .banner:hover .bannerImg {
+    transform: scale(1.06);
+    filter: blur(2px) brightness(.92);
+  }
+
+  .flecha {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(17, 24, 39, .55);
+    color: #fff;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 5;
+    transition: background .2s;
+  }
+  .flecha:hover { background: rgba(17, 24, 39, .85); }
+  .flechaIzq { left: 16px; }
+  .flechaDer { right: 16px; }
+}
+
+/* ---------- CTA "✚ Tu banner personalizable" ---------- */
+/* Hijo del .banner → queda clavado dentro del slide */
+.cta {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: max-content;
+  max-width: 85%;
+  background: rgba(17, 24, 39, .6);
+  border: 1.5px dashed rgba(255, 255, 255, .85);
+  border-radius: 14px;
+  padding: 12px 20px;
+  color: #fff;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  text-align: center;
+  transition: background .2s ease;
+}
+
+.cta:hover {
+  background: rgba(17, 24, 39, .85);
+}
+
+.ctaTitulo {
+  font-size: .95rem;
+  font-weight: 800;
+}
+
+.ctaSub {
+  font-size: .72rem;
+  color: #e5e7eb;
+}
+
+@media (min-width: 768px) {
+  .cta {
+    bottom: 28px;
+    padding: 14px 28px;
+  }
+  .ctaTitulo { font-size: 1.05rem; }
+  .ctaSub { font-size: .78rem; }
 }

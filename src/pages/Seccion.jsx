@@ -5,6 +5,30 @@ import { getPublicadosWeb } from '../services/api'
 import ProductCard from '../components/ProductCard'
 import styles from './Seccion.module.css'
 
+// Normaliza: minúsculas + sin tildes + sin espacios
+const norm = (s) => (s || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+
+// Genera todas las formas posibles de un nombre:
+// tal cual, sin s, sin es, con s, con es
+// → "mujer" y "mujeres" comparten la clave "mujer"
+// → "hombre" y "hombres" comparten la clave "hombre"
+const clavesDe = (s) => {
+  const base = norm(s)
+  const set = new Set([base])
+  if (base.endsWith('s')) set.add(base.slice(0, -1))
+  if (base.endsWith('es')) set.add(base.slice(0, -2))
+  set.add(base + 's')
+  set.add(base + 'es')
+  return set
+}
+
+const coincide = (a, b) => {
+  const ka = clavesDe(a)
+  const kb = clavesDe(b)
+  for (const x of ka) if (kb.has(x)) return true
+  return false
+}
+
 export default function Seccion() {
   const { nombre } = useParams()
   const [productos, setProductos] = useState([])
@@ -19,7 +43,12 @@ export default function Seccion() {
       .finally(() => setLoading(false))
   }, [nombre])
 
-    const deSeccion = productos.filter(p => (p.web_categoria || '') === nombre)
+  // Matching tolerante por sección (web_categoria)
+  const porWebCat = productos.filter(p => coincide(p.web_categoria, nombre))
+  // Si la sección no existe tal cual, fallback a la categoría libre de gestión
+  const deSeccion = porWebCat.length > 0
+    ? porWebCat
+    : productos.filter(p => coincide(p.categoria, nombre))
 
   const catsMap = new Map()
   for (const p of deSeccion) {

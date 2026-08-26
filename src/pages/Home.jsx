@@ -6,12 +6,22 @@ import BarraAnuncio from '../components/BarraAnuncio'
 import BannerPromo from '../components/BannerPromo'
 import ProductCard from '../components/ProductCard'
 import styles from './Home.module.css'
+import { optimizeImage } from '../utils/image'
+import { getConfigLocal } from '../services/api'
 
 export default function Home() {
   const { config } = useLocal()
   const [productos, setProductos] = useState([])
   const [loading, setLoading] = useState(true)
 
+    const [secImages, setSecImages] = useState({})
+
+  useEffect(() => {
+    getConfigLocal()
+      .then(({ data }) => setSecImages(data?.sec_images || {}))
+      .catch(() => {})
+  }, [])
+  
   useEffect(() => {
     getPublicadosWeb()
       .then(({ data }) => setProductos(data || []))
@@ -19,6 +29,7 @@ export default function Home() {
       .finally(() => setLoading(false))
   }, [])
 
+  
   // Secciones = web_categoria definidos por el dueño, en su orden
     const deps = config.categoriasWeb || []
   const secciones = deps
@@ -83,24 +94,33 @@ export default function Home() {
        <BarraAnuncio /> 
       <BannerPromo /> 
 
-      {/* 3 cards de secciones (patrón SKM: NEW COLLECTION / FINAL SALE / CONJUNTOS) */}
+             {/* 3 cards de secciones (patrón SKM) — con foto custom estilo SKM */}
         {!loading && secciones.length > 0 && (
-        <div className={styles.promos}>
-                    {secciones.slice(0, 4).map((sec, i) => (
-            <Link
-              key={sec.nombre}
-              to={`/seccion/${encodeURIComponent(sec.nombre)}`}
-                           className={`${styles.promo} ${styles['promo' + ((i % 4) + 1)]}`}
-            >
-              <p className={styles.promoTitulo}>{sec.nombre}</p>
-              <p className={styles.promoSub}>
-                {sec.items.length} {sec.items.length === 1 ? 'producto' : 'productos'}
-              </p>
-              <span className={styles.promoBtn}>Ver todo</span>
-            </Link>
-          ))}
-        </div>
-      )}  
+          <div className={styles.promos}>
+            {secciones.slice(0, 4).map((sec, i) => {
+              const img = secImages[sec.nombre]
+              return (
+                <Link
+                  key={sec.nombre}
+                  to={`/seccion/${encodeURIComponent(sec.nombre)}`}
+                  className={`${styles.promo} ${img ? styles.promoConFoto : styles['promo' + ((i % 4) + 1)]}`}
+                >
+                  {img && (
+                    <>
+                      <img src={optimizeImage(img, 700)} alt="" className={styles.promoImg} loading="lazy" decoding="async" />
+                      <div className={styles.promoOverlay} />
+                    </>
+                  )}
+                  <p className={styles.promoTitulo}>{sec.nombre}</p>
+                  <p className={styles.promoSub}>
+                    {sec.items.length} {sec.items.length === 1 ? 'producto' : 'productos'}
+                  </p>
+                  <span className={styles.promoBtn}>Ver todo</span>
+                </Link>
+              )
+            })}
+          </div>
+        )}
 
       {loading ? (
         <p className={styles.vacio}>Cargando catálogo...</p>

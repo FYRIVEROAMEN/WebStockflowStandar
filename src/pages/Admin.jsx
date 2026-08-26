@@ -10,6 +10,7 @@ import { optimizeImage } from '../utils/image'
 import { useLocal } from '../context/LocalContext'
 import ConfigPanel from '../components/ConfigPanel'
 import styles from './Admin.module.css'
+import { useSearchParams } from 'react-router-dom'
 
 const CLOUD = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
 const PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
@@ -18,7 +19,10 @@ export default function Admin() {
   const { config } = useLocal()
   const [autorizado, setAutorizado] = useState(sessionStorage.getItem('admin_ok') === '1')
   const [codigo, setCodigo] = useState('')
-  const [tab, setTab] = useState('pendientes')
+    const [searchParams] = useSearchParams()
+  const [tab, setTab] = useState(
+    ['config', 'vidriera'].includes(searchParams.get('tab')) ? 'config' : 'pendientes'
+  )
   const [pendientes, setPendientes] = useState([])
   const [publicados, setPublicados] = useState([])
   const [loading, setLoading] = useState(true)

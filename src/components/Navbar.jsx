@@ -1,21 +1,24 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Menu, ShoppingCart, Package, X, User, Search } from 'lucide-react'
 import { useCart } from '../context/CartContext'
-import { getCategoriasWeb } from '../services/api'
 import { useLocal } from '../context/LocalContext'
+import { getCountPendientesWeb } from '../services/api'
 import styles from './Navbar.module.css'
-
 
 export default function Navbar() {
   const { cartCount } = useCart()
   const { config } = useLocal()
+  const { pathname } = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
-  const [categorias, setCategorias] = useState([])
   const [compacto, setCompacto] = useState(false)
   const [busqueda, setBusqueda] = useState('')
+  const [pendientes, setPendientes] = useState(0)
   const navigate = useNavigate()
-  const nombreLocal = import.meta.env.VITE_NOMBRE_LOCAL || 'StockFlow'
+  const nombreLocal = config?.nombreLocal || import.meta.env.VITE_NOMBRE_LOCAL || 'StockFlow'
+
+  // 🔑 ÚNICA fuente de verdad para navegación
+  const categorias = config.categoriasWeb || []
 
   const buscar = (e) => {
     e.preventDefault()
@@ -26,14 +29,19 @@ export default function Navbar() {
     }
   }
 
+  // Badge de pendientes: se actualiza al cargar y al cambiar de ruta
+  // (así después de aprobar en el admin, el número baja al volver)
   useEffect(() => {
-    getCategoriasWeb().then(({ data }) => setCategorias(data || [])).catch(() => {})
-  }, [])
+    let vivo = true
+    getCountPendientesWeb()
+      .then(({ data }) => { if (vivo) setPendientes(data) })
+      .catch(() => {})
+    return () => { vivo = false }
+  }, [pathname])
 
-    useEffect(() => {
+  useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY
-      // Histéresis: activa > 60, desactiva < 20 → nunca oscila en el borde
       setCompacto(prev => (y > 60 ? true : y < 20 ? false : prev))
     }
     onScroll()
@@ -89,12 +97,13 @@ export default function Navbar() {
           <Link to="/admin" className={styles.admBtn} title="Administrador">
             <User size={16} />
             <span>admin</span>
+            {pendientes > 0 && <span className={styles.admBadge}>{pendientes}</span>}
           </Link>
         </div>
 
         <nav className={styles.navDesktop}>
           <Link to="/" className={styles.navDesktopLink}>Inicio</Link>
-          {(config.categoriasWeb || []).map(d => (
+          {categorias.map(d => (
             <Link key={d} to={`/seccion/${encodeURIComponent(d)}`} className={styles.navDesktopLink}>
               {d}
             </Link>
@@ -127,18 +136,21 @@ export default function Navbar() {
 
             <Link to="/" className={styles.drawerLink} onClick={() => setMenuOpen(false)}>Inicio</Link>
             <p className={styles.drawerSub}>Categorías</p>
-            {categorias.map(cat => (
+            {categorias.map(c => (
               <Link
-                key={cat.nombre}
-                to={`/categoria/${encodeURIComponent(cat.nombre)}`}
+                key={c}
+                to={`/seccion/${encodeURIComponent(c)}`}
                 className={styles.drawerLink}
                 onClick={() => setMenuOpen(false)}
               >
-                {cat.nombre}
+                {c}
               </Link>
             ))}
             <p className={styles.drawerSub}>Cuenta</p>
-            <Link to="/admin" className={styles.drawerLink} onClick={() => setMenuOpen(false)}>🔐 Admin</Link>
+            <Link to="/admin" className={styles.drawerLink} onClick={() => setMenuOpen(false)}>
+              🔐 Admin
+              {pendientes > 0 && <span className={styles.drawerBadge}>{pendientes} por aprobar</span>}
+            </Link>
           </nav>
         </>
       )}

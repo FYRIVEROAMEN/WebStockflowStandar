@@ -115,3 +115,29 @@
 .pasoOk { background: #16a34a; }
 .pasoTxt { font-size: .85rem; font-weight: 600; margin: 2px 0 6px; color: var(--color-texto); }
 .pasoBtn { font-size: .75rem; font-weight: 700; color: var(--color-primario); text-decoration: none; }
+
+/* ---------- CARDS CON FOTO CUSTOM (estilo SKM) ---------- */
+.promo { position: relative; overflow: hidden; }
+.promoConFoto { background: #111827; }
+
+.promoImg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .5s ease, filter .5s ease;
+}
+
+.promoOverlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.6), rgba(0,0,0,.15) 60%, rgba(0,0,0,.05));
+}
+
+.promoTitulo, .promoSub, .promoBtn { position: relative; z-index: 1; }
+
+/* Efecto SKM: zoom + blur al apoyar el mouse (solo desktop) */
+@media (min-width: 768px) {
+  .promo:hover .promoImg {
+    transform: scale(1.07);
+    filter: blur(2px) brightness(.9);
+  }
+}

@@ -194,3 +194,14 @@ export const buscarProductosWeb = async (query) => {
   if (error) throw error
   return { data }
 }
+
+// Cuenta productos esperando aprobación (para el badge del navbar)
+export async function getCountPendientesWeb() {
+  const localId = Number(import.meta.env.VITE_LOCAL_ID || 1)
+  const { count, error } = await supabase
+    .from('productos')
+    .select('id', { count: 'exact', head: true })
+    .eq('web_estado', 'pendiente')
+    .eq('local_id', localId)
+  return { data: error ? 0 : (count || 0) }
+}

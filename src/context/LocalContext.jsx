@@ -16,6 +16,11 @@ export function LocalProvider({ children }) {
       const { data } = await getConfigLocal()
       if (data) {
         setConfig({
+          ...data,   // ← 🔑 TODO el jsonb crudo pasa: whatsapp, facebook,
+                     //    hero_slides, sec_images y CUALQUIER key futura,
+                     //    sin tocar este archivo nunca más
+          // Alias camelCase para el código ya escrito (retrocompatibilidad)
+          nombreLocal: data.nombre_local || '',
           anuncio: data.anuncio || import.meta.env.VITE_ANUNCIO || '',
           descuentoTransferencia: Number(data.descuento_transferencia ?? 0),
           categoriasWeb: data.web_categorias || [],
