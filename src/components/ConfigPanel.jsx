@@ -7,16 +7,7 @@ import EditorRecorte from '../components/EditorRecorte'
 import PanelGuia from '../components/PanelGuia'
 import SeccionAcordeon from '../components/SeccionAcordeon'
 import { Upload, Trash2, Pencil } from 'lucide-react'
-
-const s = {
-  card: { background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: 16, marginBottom: 16 },
-  label: { display: 'block', fontSize: '.85rem', fontWeight: 700, marginBottom: 6, color: '#111827' },
-  input: { width: '100%', padding: '10px 12px', border: '1.5px solid #e5e7eb', borderRadius: 8, fontSize: '.9rem', boxSizing: 'border-box' },
-  btn: { width: '100%', padding: 12, border: 'none', borderRadius: 8, background: '#111827', color: '#fff', fontWeight: 700, fontSize: '.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 },
-  row: { display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 },
-  chip: { display: 'inline-flex', alignItems: 'center', gap: 6, background: '#111827', color: '#fff', fontSize: '.75rem', fontWeight: 700, padding: '5px 10px', borderRadius: 999 },
-  chipX: { background: 'none', border: 'none', color: '#9ca3af', cursor: 'pointer', padding: 0, fontSize: '.85rem' },
-}
+import styles from './ConfigPanel.module.css'
 
 const SLIDE_VACIO = { id: null, imageUrl: '', titulo: '', subtitulo: '' }
 
@@ -25,7 +16,6 @@ export default function ConfigPanel() {
   const [nombreLocal, setNombreLocal] = useState('')
   const [logoUrl, setLogoUrl] = useState('')
   const [subiendoLogo, setSubiendoLogo] = useState(false)
-  const [anuncio, setAnuncio] = useState('')
   const [whatsapp, setWhatsapp] = useState('')
   const [email, setEmail] = useState('')
   const [direccion, setDireccion] = useState('')
@@ -35,8 +25,6 @@ export default function ConfigPanel() {
   const [twitter, setTwitter] = useState('')
   const [youtube, setYoutube] = useState('')
   const [tiktok, setTiktok] = useState('')
-  const [activarDesc, setActivarDesc] = useState(false)
-  const [pct, setPct] = useState(10)
   const [categoriasWeb, setCategoriasWeb] = useState([])
   const [nuevoCat, setNuevoCat] = useState('')
   const [heroSlides, setHeroSlides] = useState([])
@@ -52,19 +40,16 @@ export default function ConfigPanel() {
   // 🪗 Acordeón
   const [abiertos, setAbiertos] = useState({})
 
-  // 🎉 Botón "Listo" (cierre emocional)
+  // 🎉 Botón "Listo"
   const [celebrando, setCelebrando] = useState(false)
 
-  // 🎯 Qué pasos están completos (para badges y auto-apertura)
   const completos = {
     1: !!(nombreLocal.trim() && logoUrl),
     2: whatsapp.replace(/\D/g, '').length >= 8,
     3: categoriasWeb.length > 0,
-    4: heroSlides.length > 0,
-    5: activarDesc
+    4: heroSlides.length > 0
   }
 
-  // 🎯 AUTO-APERTURA: al entrar, abre el primer paso incompleto
   useEffect(() => {
     if (cargando) return
     const primerIncompleto = Object.entries(completos).find(([, ok]) => !ok)?.[0]
@@ -72,21 +57,14 @@ export default function ConfigPanel() {
     // eslint-disable-next-line
   }, [cargando])
 
-  const toggle = (n) => {
-    setAbiertos(a => ({ ...a, [n]: !a[n] }))
-  }
-
-  // Avance manual: el salto lo decide el dueño, nunca el sistema
-  const siguiente = (n) => {
-    setAbiertos(a => ({ ...a, [n]: false, [n + 1]: true }))
-  }
+  const toggle = (n) => setAbiertos(a => ({ ...a, [n]: !a[n] }))
+  const siguiente = (n) => setAbiertos(a => ({ ...a, [n]: false, [n + 1]: true }))
 
   useEffect(() => {
     getConfigLocal().then(({ data }) => {
       if (data) {
         setNombreLocal(data.nombre_local || '')
         setLogoUrl(data.logo_url || '')
-        setAnuncio(data.anuncio || '')
         setWhatsapp(data.whatsapp || '')
         setEmail(data.email || '')
         setDireccion(data.direccion || '')
@@ -96,8 +74,6 @@ export default function ConfigPanel() {
         setTwitter(data.twitter || '')
         setYoutube(data.youtube || '')
         setTiktok(data.tiktok || '')
-        setActivarDesc(data.descuento_transferencia != null)
-        setPct(Number(data.descuento_transferencia) || 10)
         setCategoriasWeb(data.web_categorias || [])
         setHeroSlides(data.hero_slides || [])
         setSecImages(data.sec_images || {})
@@ -112,7 +88,6 @@ export default function ConfigPanel() {
     }
   }, [cargando])
 
-  // 💾 AUTO-GUARDADO: cualquier cambio → guarda a los 800ms
   useEffect(() => {
     if (!listo.current) return
     setEstadoGuardado('guardando')
@@ -121,7 +96,6 @@ export default function ConfigPanel() {
         await updateConfigLocal({
           nombre_local: nombreLocal.trim() || null,
           logo_url: logoUrl || null,
-          anuncio: anuncio.trim() || null,
           whatsapp: whatsapp.trim() || null,
           email: email.trim() || null,
           direccion: direccion.trim() || null,
@@ -131,7 +105,6 @@ export default function ConfigPanel() {
           twitter: twitter.trim() || null,
           youtube: youtube.trim() || null,
           tiktok: tiktok.trim() || null,
-          descuento_transferencia: activarDesc ? Number(pct) : null,
           web_categorias: categoriasWeb,
           hero_slides: heroSlides,
           sec_images: secImages
@@ -144,8 +117,8 @@ export default function ConfigPanel() {
       }
     }, 800)
     return () => clearTimeout(t)
-  }, [nombreLocal, logoUrl, anuncio, whatsapp, email, direccion, envioInfo,
-      facebook, instagram, twitter, youtube, tiktok, activarDesc, pct,
+  }, [nombreLocal, logoUrl, whatsapp, email, direccion, envioInfo,
+      facebook, instagram, twitter, youtube, tiktok,
       categoriasWeb, heroSlides, secImages, refresh])
 
   const subirLogo = async (e) => {
@@ -167,7 +140,7 @@ export default function ConfigPanel() {
   }
 
   const salvarSlide = () => {
-    if (!slideForm.imageUrl || !slideForm.titulo.trim()) return
+    if (!slideForm.imageUrl || slideForm.imageUrl.startsWith('blob:') || !slideForm.titulo.trim()) return
     if (slideForm.id) {
       setHeroSlides(h => h.map(sl => (sl.id === slideForm.id ? { ...slideForm, titulo: slideForm.titulo.trim() } : sl)))
     } else if (heroSlides.length < 3) {
@@ -215,28 +188,23 @@ export default function ConfigPanel() {
     return copia
   })
 
-  if (cargando) return <p style={{ fontSize: '.85rem', color: '#6b7280' }}>Cargando configuración...</p>
+  if (cargando) return <p className={styles.estadoTexto}>Cargando configuración...</p>
 
   return (
     <div>
       {/* 💾 Indicador de auto-guardado */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', minHeight: 20, marginBottom: 6 }}>
-        {estadoGuardado === 'guardando' && (
-          <span style={{ fontSize: '.72rem', color: '#6b7280' }}>Guardando…</span>
-        )}
-        {estadoGuardado === 'ok' && (
-          <span style={{ fontSize: '.72rem', color: '#16a34a', fontWeight: 700 }}>✓ Guardado</span>
-        )}
+      <div className={styles.estadoRow}>
+        {estadoGuardado === 'guardando' && <span className={styles.estadoTexto}>Guardando…</span>}
+        {estadoGuardado === 'ok' && <span className={styles.estadoOk}>✓ Guardado</span>}
       </div>
 
-      {/* 🧭 Guía de progreso */}
       <PanelGuia
         datos={{
+          nombre: nombreLocal,
           logo: logoUrl,
           whatsapp,
           categorias: categoriasWeb.length,
-          banners: heroSlides.length,
-          fotosCards: categoriasWeb.filter(c => secImages[c]).length
+          banners: heroSlides.length
         }}
       />
 
@@ -250,46 +218,34 @@ export default function ConfigPanel() {
         preview={completos[1] ? `${nombreLocal || ''} · Logo ✓` : 'Sin nombre ni logo'}
         onSiguiente={() => siguiente(1)}
       >
-        <div style={s.card}>
-          <label style={s.label}>Nombre del local</label>
+        <div className={styles.card}>
+          <label className={styles.label}>Nombre del local</label>
           <input
-            style={s.input}
+            className={styles.input}
             value={nombreLocal}
             onChange={e => setNombreLocal(e.target.value)}
             placeholder="Ej: Zen Store, Moon Importados..."
           />
-          <p style={{ fontSize: '.72rem', color: '#6b7280', margin: '8px 0 0' }}>
-            Tu marca en el footer y en toda la tienda.
-          </p>
+          <p className={styles.hint}>Tu marca en el footer y en toda la tienda.</p>
         </div>
 
-        <div style={s.card}>
-          <label style={s.label}>Logo del local</label>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div className={styles.card}>
+          <label className={styles.label}>Logo del local</label>
+          <div className={styles.logoRow}>
             {logoUrl ? (
-              <img src={logoOptimizado(logoUrl)} alt="logo" style={{ width: 56, height: 56, objectFit: 'contain', borderRadius: 8, background: '#f3f4f6' }} />
+              <img src={logoOptimizado(logoUrl)} alt="logo" className={styles.logoImg} />
             ) : (
-              <div style={{ width: 56, height: 56, borderRadius: 8, background: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>📦</div>
+              <div className={styles.logoPh}>📦</div>
             )}
-            <label style={{ ...s.btn, width: 'auto', padding: '8px 14px', cursor: 'pointer', margin: 0 }}>
+            <label className={`${styles.btn} ${styles.btnAuto}`}>
               {subiendoLogo ? 'Subiendo...' : 'Subir logo'}
               <input type="file" accept="image/*" hidden onChange={subirLogo} />
             </label>
             {logoUrl && (
-              <button onClick={() => setLogoUrl('')} style={{ ...s.btn, width: 'auto', padding: '8px 12px', background: '#dc2626' }}>Quitar</button>
+              <button onClick={() => setLogoUrl('')} className={`${styles.btn} ${styles.btnAuto} ${styles.btnRojo}`}>Quitar</button>
             )}
           </div>
-          <p style={{ fontSize: '.72rem', color: '#6b7280', margin: '8px 0 0' }}>
-            Recomendado: PNG cuadrado con fondo transparente.
-          </p>
-        </div>
-
-        <div style={s.card}>
-          <label style={s.label}>Barra de anuncio (opcional)</label>
-          <input style={s.input} value={anuncio} onChange={e => setAnuncio(e.target.value)} placeholder="Ej: 🚚 Envíos gratis superando $150.000" />
-          <p style={{ fontSize: '.72rem', color: '#6b7280', margin: '8px 0 0' }}>
-            Aparece como cinta que se mueve arriba de todo. Vacío = no se muestra.
-          </p>
+          <p className={styles.hint}>Recomendado: PNG cuadrado con fondo transparente.</p>
         </div>
       </SeccionAcordeon>
 
@@ -303,39 +259,35 @@ export default function ConfigPanel() {
         preview={whatsapp ? `WhatsApp: +${whatsapp}` : 'Sin WhatsApp'}
         onSiguiente={() => siguiente(2)}
       >
-        <div style={s.card}>
-          <label style={s.label}>💬 WhatsApp de pedidos</label>
-          <input style={s.input} value={whatsapp} onChange={e => setWhatsapp(e.target.value.replace(/\D/g, ''))} placeholder="Ej: 5491158471333" inputMode="numeric" />
-          <p style={{ fontSize: '.72rem', color: '#6b7280', margin: '8px 0 0' }}>
-            Solo números con código de país. Activa el botón verde flotante y el link del footer.
-          </p>
+        <div className={styles.card}>
+          <label className={styles.label}>💬 WhatsApp de pedidos</label>
+          <input className={styles.input} value={whatsapp} onChange={e => setWhatsapp(e.target.value.replace(/\D/g, ''))} placeholder="Ej: 5491158471333" inputMode="numeric" />
+          <p className={styles.hint}>Solo números con código de país. Activa el botón verde flotante y el link del footer.</p>
         </div>
 
-        <div style={s.card}>
-          <label style={s.label}>📍 Datos del footer</label>
-          <label style={{ ...s.label, fontSize: '.8rem', marginBottom: 4 }}>Email de contacto</label>
-          <input style={{ ...s.input, marginBottom: 10 }} value={email} onChange={e => setEmail(e.target.value)} placeholder="ventas@tulocal.com" />
-          <label style={{ ...s.label, fontSize: '.8rem', marginBottom: 4 }}>Dirección</label>
-          <input style={{ ...s.input, marginBottom: 10 }} value={direccion} onChange={e => setDireccion(e.target.value)} placeholder="Av. Córdoba 2773" />
-          <label style={{ ...s.label, fontSize: '.8rem', marginBottom: 4 }}>Info de envíos</label>
-          <input style={s.input} value={envioInfo} onChange={e => setEnvioInfo(e.target.value)} placeholder="Ej: Correo Argentino · Gratis desde $150.000" />
+        <div className={styles.card}>
+          <label className={styles.label}>📍 Datos del footer</label>
+          <label className={styles.labelMini}>Email de contacto</label>
+          <input className={`${styles.input} ${styles.inputMb}`} value={email} onChange={e => setEmail(e.target.value)} placeholder="ventas@tulocal.com" />
+          <label className={styles.labelMini}>Dirección</label>
+          <input className={`${styles.input} ${styles.inputMb}`} value={direccion} onChange={e => setDireccion(e.target.value)} placeholder="Av. Córdoba 2773" />
+          <label className={styles.labelMini}>Info de envíos</label>
+          <input className={styles.input} value={envioInfo} onChange={e => setEnvioInfo(e.target.value)} placeholder="Ej: Correo Argentino · Gratis desde $150.000" />
         </div>
 
-        <div style={s.card}>
-          <label style={s.label}>📱 Redes sociales (opcional)</label>
-          <p style={{ fontSize: '.72rem', color: '#6b7280', margin: '0 0 12px' }}>
-            Usuario (ej: @tulocal) o URL completa. Aparecen como íconos en el footer.
-          </p>
-          <label style={{ ...s.label, fontSize: '.8rem', marginBottom: 4 }}>Facebook</label>
-          <input style={{ ...s.input, marginBottom: 10 }} value={facebook} onChange={e => setFacebook(e.target.value)} placeholder="@tulocal" />
-          <label style={{ ...s.label, fontSize: '.8rem', marginBottom: 4 }}>Instagram</label>
-          <input style={{ ...s.input, marginBottom: 10 }} value={instagram} onChange={e => setInstagram(e.target.value)} placeholder="@tulocal" />
-          <label style={{ ...s.label, fontSize: '.8rem', marginBottom: 4 }}>Twitter / X</label>
-          <input style={{ ...s.input, marginBottom: 10 }} value={twitter} onChange={e => setTwitter(e.target.value)} placeholder="@tulocal" />
-          <label style={{ ...s.label, fontSize: '.8rem', marginBottom: 4 }}>YouTube</label>
-          <input style={{ ...s.input, marginBottom: 10 }} value={youtube} onChange={e => setYoutube(e.target.value)} placeholder="@tulocal" />
-          <label style={{ ...s.label, fontSize: '.8rem', marginBottom: 4 }}>TikTok</label>
-          <input style={s.input} value={tiktok} onChange={e => setTiktok(e.target.value)} placeholder="@tulocal" />
+        <div className={styles.card}>
+          <label className={styles.label}>📱 Redes sociales (opcional)</label>
+          <p className={styles.hintLista}>Usuario (ej: @tulocal) o URL completa. Aparecen como íconos en el footer.</p>
+          <label className={styles.labelMini}>Facebook</label>
+          <input className={`${styles.input} ${styles.inputMb}`} value={facebook} onChange={e => setFacebook(e.target.value)} placeholder="@tulocal" />
+          <label className={styles.labelMini}>Instagram</label>
+          <input className={`${styles.input} ${styles.inputMb}`} value={instagram} onChange={e => setInstagram(e.target.value)} placeholder="@tulocal" />
+          <label className={styles.labelMini}>Twitter / X</label>
+          <input className={`${styles.input} ${styles.inputMb}`} value={twitter} onChange={e => setTwitter(e.target.value)} placeholder="@tulocal" />
+          <label className={styles.labelMini}>YouTube</label>
+          <input className={`${styles.input} ${styles.inputMb}`} value={youtube} onChange={e => setYoutube(e.target.value)} placeholder="@tulocal" />
+          <label className={styles.labelMini}>TikTok</label>
+          <input className={styles.input} value={tiktok} onChange={e => setTiktok(e.target.value)} placeholder="@tulocal" />
         </div>
       </SeccionAcordeon>
 
@@ -349,54 +301,54 @@ export default function ConfigPanel() {
         preview={categoriasWeb.length ? `${categoriasWeb.length} categorías` : 'Sin categorías'}
         onSiguiente={() => siguiente(3)}
       >
-        <div style={s.card}>
-          <label style={s.label}>Categorías del catálogo</label>
-          <p style={{ fontSize: '.72rem', color: '#6b7280', margin: '0 0 8px' }}>
+        <div className={styles.card}>
+          <label className={styles.label}>Categorías del catálogo</label>
+          <p className={styles.hintChips}>
             Son las cards grandes de la home y el menú. Recomendado: 4 o 5.
             Ej: si vendés sahumerios → "Sahumerios", "Deco", "Regalos".
           </p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+          <div className={styles.chipsRow}>
             {categoriasWeb.map(c => (
-              <span key={c} style={s.chip}>
+              <span key={c} className={styles.chip}>
                 {c}
-                <button onClick={() => quitarCat(c)} style={s.chipX}>×</button>
+                <button onClick={() => quitarCat(c)} className={styles.chipX}>×</button>
               </span>
             ))}
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <input style={{ ...s.input, flex: 1 }} value={nuevoCat} onChange={e => setNuevoCat(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); agregarCat(); } }} placeholder="Agregar (ej: Mujer)" />
-            <button onClick={agregarCat} style={{ ...s.btn, width: 'auto', padding: '10px 14px' }}>+</button>
+          <div className={styles.catAddRow}>
+            <input className={`${styles.input} ${styles.flex1}`} value={nuevoCat} onChange={e => setNuevoCat(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); agregarCat(); } }} placeholder="Agregar (ej: Mujer)" />
+            <button onClick={agregarCat} className={`${styles.btn} ${styles.btnMas}`}>+</button>
           </div>
         </div>
 
-        <div style={s.card}>
-          <label style={s.label}>🎨 Foto de cada card</label>
-          <p style={{ fontSize: '.72rem', color: '#6b7280', margin: '0 0 10px' }}>
+        <div className={styles.card}>
+          <label className={styles.label}>🎨 Foto de cada card</label>
+          <p className={styles.hintBanner}>
             Cada categoría puede tener su foto con efecto al pasar el mouse.
             Sin foto, se muestra un degradado de color.
           </p>
-          {categoriasWeb.length === 0 && <p style={{ fontSize: '.8rem', color: '#6b7280' }}>Agregá categorías arriba primero.</p>}
+          {categoriasWeb.length === 0 && <p className={styles.vacioTexto}>Agregá categorías arriba primero.</p>}
           {categoriasWeb.map(cat => (
-            <div key={cat} style={{ ...s.row, background: '#f9fafb', padding: 8, borderRadius: 8 }}>
+            <div key={cat} className={`${styles.row} ${styles.rowFondo}`}>
               {secImages[cat] ? (
-                <img src={secImages[cat]} alt="" style={{ width: 56, height: 40, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
+                <img src={secImages[cat]} alt="" className={styles.thumbImg} />
               ) : (
-                <div style={{ width: 56, height: 40, borderRadius: 6, background: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', flexShrink: 0 }}>🎨</div>
+                <div className={styles.thumbPh}>🎨</div>
               )}
-              <span style={{ flex: 1, minWidth: 0, fontSize: '.85rem', fontWeight: 700, color: '#111827' }}>{cat}</span>
-              <label style={{ ...s.btn, width: 'auto', padding: '6px 10px', cursor: 'pointer', margin: 0, fontSize: '.72rem' }}>
+              <span className={styles.catNombre}>{cat}</span>
+              <label className={`${styles.btn} ${styles.btnMini}`}>
                 {secImages[cat] ? 'Cambiar' : 'Subir'}
                 <input type="file" accept="image/*" hidden onChange={subirImgSec(cat)} />
               </label>
               {secImages[cat] && (
-                <button onClick={() => quitarImgSec(cat)} style={{ ...s.chipX, color: '#dc2626', fontSize: '1rem' }}>×</button>
+                <button onClick={() => quitarImgSec(cat)} className={`${styles.chipX} ${styles.chipXRojo}`}>×</button>
               )}
             </div>
           ))}
         </div>
       </SeccionAcordeon>
 
-      {/* ---------- PASO 4 · TU VIDRIERA ---------- */}
+      {/* ---------- PASO 4 · BANNER DE LA HOME ---------- */}
       <SeccionAcordeon
         numero={4}
         titulo="Banner de la home"
@@ -404,36 +356,39 @@ export default function ConfigPanel() {
         onToggle={() => toggle(4)}
         completo={completos[4]}
         preview={heroSlides.length ? `${heroSlides.length} slide${heroSlides.length > 1 ? 's' : ''}` : 'Sin banner'}
-        onSiguiente={() => siguiente(4)}
       >
-        <div style={s.card}>
-          <label style={s.label}>🖼️ Banner (hasta 3 slides)</label>
-          <p style={{ fontSize: '.72rem', color: '#6b7280', margin: '0 0 10px' }}>
+        <div className={styles.card}>
+          <label className={styles.label}>🖼️ Banner (hasta 3 slides)</label>
+          <p className={styles.hintBanner}>
             La portada de tu tienda. Subí una foto, arrastrá para encuadrar,
             poné título y subtítulo. Sin banner, se muestra uno por defecto.
           </p>
 
           {heroSlides.map(sl => (
-            <div key={sl.id} style={{ ...s.row, background: '#f9fafb', padding: 8, borderRadius: 8 }}>
-              <img src={sl.imageUrl} alt="" style={{ width: 64, height: 40, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ margin: 0, fontSize: '.85rem', fontWeight: 700, color: '#111827' }}>{sl.titulo}</p>
-                <p style={{ margin: 0, fontSize: '.72rem', color: '#6b7280', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{sl.subtitulo}</p>
+            <div key={sl.id} className={`${styles.row} ${styles.rowFondo}`}>
+              {sl.imageUrl.startsWith('blob:') ? (
+                <div className={styles.thumbPh}>🌆</div>
+              ) : (
+                <img src={sl.imageUrl} alt="" className={styles.thumbImg} />
+              )}
+              <div className={styles.slideInfo}>
+                <p className={styles.slideTitulo}>{sl.titulo}</p>
+                <p className={styles.slideSub}>{sl.subtitulo}</p>
               </div>
-              <button onClick={() => editarSlide(sl)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#2563eb', display: 'flex', padding: 4 }}><Pencil size={15} /></button>
-              <button onClick={() => quitarSlide(sl.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#dc2626', display: 'flex', padding: 4 }}><Trash2 size={15} /></button>
+              <button onClick={() => editarSlide(sl)} className={`${styles.iconBtn} ${styles.iconBtnAzul}`} title="Editar"><Pencil size={15} /></button>
+              <button onClick={() => quitarSlide(sl.id)} className={`${styles.iconBtn} ${styles.iconBtnRojo}`} title="Quitar"><Trash2 size={15} /></button>
             </div>
           ))}
 
           {heroSlides.length < 3 && (
-            <div style={{ border: '1.5px dashed #e5e7eb', borderRadius: 8, padding: 12, marginTop: 8 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-                {slideForm.imageUrl ? (
-                  <img src={slideForm.imageUrl} alt="" style={{ width: 64, height: 40, objectFit: 'cover', borderRadius: 6 }} />
+            <div className={styles.formSlide}>
+              <div className={styles.slideThumbRow}>
+                {slideForm.imageUrl && !slideForm.imageUrl.startsWith('blob:') ? (
+                  <img src={slideForm.imageUrl} alt="" className={styles.thumbSlideImg} />
                 ) : (
-                  <div style={{ width: 64, height: 40, borderRadius: 6, background: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem' }}>🌆</div>
+                  <div className={styles.thumbSlidePh}>🌆</div>
                 )}
-                <label style={{ ...s.btn, width: 'auto', padding: '8px 12px', cursor: 'pointer', margin: 0 }}>
+                <label className={`${styles.btn} ${styles.btnAuto}`}>
                   <Upload size={14} /> {archivoSlide ? 'Cambiar imagen' : 'Subir imagen'}
                   <input type="file" accept="image/*" hidden onChange={subirSlideImg} />
                 </label>
@@ -453,9 +408,9 @@ export default function ConfigPanel() {
                 />
               )}
 
-              <input style={{ ...s.input, marginBottom: 8, marginTop: 8 }} value={slideForm.titulo} onChange={e => setSlideForm(f => ({ ...f, titulo: e.target.value }))} placeholder="Título (ej: Nueva temporada)" />
-              <input style={{ ...s.input, marginBottom: 10 }} value={slideForm.subtitulo} onChange={e => setSlideForm(f => ({ ...f, subtitulo: e.target.value }))} placeholder="Subtítulo (ej: Lo último ya llegó)" />
-              <button onClick={salvarSlide} disabled={!slideForm.imageUrl || !slideForm.titulo.trim()} style={{ ...s.btn, opacity: !slideForm.imageUrl || !slideForm.titulo.trim() ? 0.5 : 1 }}>
+              <input className={`${styles.input} ${styles.inputSlide}`} value={slideForm.titulo} onChange={e => setSlideForm(f => ({ ...f, titulo: e.target.value }))} placeholder="Título (ej: Nueva temporada)" />
+              <input className={`${styles.input} ${styles.inputMb}`} value={slideForm.subtitulo} onChange={e => setSlideForm(f => ({ ...f, subtitulo: e.target.value }))} placeholder="Subtítulo (ej: Lo último ya llegó)" />
+              <button onClick={salvarSlide} disabled={!slideForm.imageUrl || slideForm.imageUrl.startsWith('blob:') || !slideForm.titulo.trim()} className={styles.btn}>
                 {slideForm.id ? 'Actualizar slide' : '+ Agregar slide'}
               </button>
             </div>
@@ -463,57 +418,13 @@ export default function ConfigPanel() {
         </div>
       </SeccionAcordeon>
 
-      {/* ---------- PASO 5 · VENTAS ---------- */}
-      <SeccionAcordeon
-        numero={5}
-        titulo="Estrategia de ventas"
-        abierto={!!abiertos[5]}
-        onToggle={() => toggle(5)}
-        completo={completos[5]}
-        preview={activarDesc ? `Descuento ${pct}%` : 'Sin descuento'}
-      >
-        <div style={s.card}>
-          <label style={s.row}>
-            <input type="checkbox" checked={activarDesc} onChange={e => setActivarDesc(e.target.checked)} />
-            <span style={{ fontSize: '.9rem', fontWeight: 700 }}>Descuento por transferencia</span>
-          </label>
-          <p style={{ fontSize: '.72rem', color: '#6b7280', margin: '0 0 8px' }}>
-            Mostrá un precio más bajo si te pagan por transferencia (te ahorra comisiones).
-          </p>
-          {activarDesc && (
-            <>
-              <label style={s.label}>Porcentaje (%)</label>
-              <input style={s.input} type="number" min="1" max="90" value={pct} onChange={e => setPct(e.target.value)} />
-            </>
-          )}
-        </div>
-      </SeccionAcordeon>
-
-      {/* 🎉 Botón de cierre emocional: el auto-guardado ya hizo todo,
-          pero el dueño siente el "terminé y quedó guardado" */}
+      {/* 🎉 Botón de cierre emocional */}
       <button
         onClick={() => {
           setCelebrando(true)
           setTimeout(() => setCelebrando(false), 2500)
         }}
-        style={{
-          width: '100%',
-          padding: 14,
-          border: 'none',
-          borderRadius: 12,
-          background: celebrando ? '#16a34a' : '#111827',
-          color: '#fff',
-          fontWeight: 800,
-          fontSize: '1rem',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 8,
-          marginTop: 8,
-          transition: 'background .3s ease, box-shadow .3s ease',
-          boxShadow: celebrando ? '0 4px 14px rgba(22, 163, 74, .4)' : 'none'
-        }}
+        className={`${styles.listoBtn} ${celebrando ? styles.listoBtnOk : ''}`}
       >
         {celebrando ? '✓ ¡Todo listo! Tu tienda está actualizada' : '🎉 Listo'}
       </button>

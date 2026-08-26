@@ -49,7 +49,7 @@ export default function Home() {
         <BarraAnuncio />
         {esDueno ? (
           <div className={styles.onboarding}>
-            <h2 className={styles.onbTitulo}>🚀 Tu vidriera está lista</h2>
+            <h2 className={styles.onbTitulo}>🚀 Tu Tienda está lista</h2>
             <p className={styles.onbSub}>Completá estos pasos para abrir al público:</p>
 
             <div className={styles.paso}>
@@ -58,7 +58,7 @@ export default function Home() {
               </span>
               <div>
                 <p className={styles.pasoTxt}>Creá tus secciones (Mujer, Hombre...)</p>
-                <Link to="/admin" className={styles.pasoBtn}>Ir a Mi vidriera →</Link>
+                <Link to="/admin?tab=config" className={styles.pasoBtn}>Ir a Mi Tienda →</Link>
               </div>
             </div>
 
@@ -66,7 +66,7 @@ export default function Home() {
               <span className={styles.pasoNum}>2</span>
               <div>
                 <p className={styles.pasoTxt}>Aprobá tu primer producto</p>
-                <Link to="/admin" className={styles.pasoBtn}>Ir a Pendientes →</Link>
+                <Link to="/admin?tab=pendientes" className={styles.pasoBtn}>Ir a Pendientes →</Link>
               </div>
             </div>
 
@@ -74,14 +74,14 @@ export default function Home() {
               <span className={styles.pasoNum}>3</span>
               <div>
                 <p className={styles.pasoTxt}>Escribí tu anuncio del mes</p>
-                <Link to="/admin" className={styles.pasoBtn}>Configurar →</Link>
+                <Link to="/admin?tab=marketing" className={styles.pasoBtn}>Configurar Promociones →</Link>
               </div>
             </div>
           </div>
         ) : (
           <div className={styles.onboarding}>
             <p className={styles.onbEmoji}>🏗️</p>
-            <h2 className={styles.onbTitulo}>Estamos preparando la vidriera</h2>
+            <h2 className={styles.onbTitulo}>Estamos preparando la tienda</h2>
             <p className={styles.onbSub}>Muy pronto vas a poder ver nuestros productos acá.</p>
           </div>
         )}

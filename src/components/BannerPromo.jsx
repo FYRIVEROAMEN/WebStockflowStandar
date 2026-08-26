@@ -65,7 +65,7 @@ export default function BannerPromo() {
             {esDefault && i === 0 && (
               <button
                 className={styles.cta}
-                onClick={() => navigate('/admin?tab=vidriera')}
+                onClick={() => navigate('/admin?tab=config')}
               >
                 <span className={styles.ctaTitulo}>✚ Tu banner personalizable</span>
                 <span className={styles.ctaSub}>Hasta 3 slides con tus fotos y textos · tocá para crearlo</span>

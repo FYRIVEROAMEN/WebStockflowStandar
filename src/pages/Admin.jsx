@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Check, X, Upload, Trash2, ArrowLeft, Pencil, Save } from 'lucide-react'
+import { Check, X, Upload, Trash2, ArrowLeft, Pencil, Save, Inbox, Store, Palette, Megaphone } from 'lucide-react'
 import toast from 'react-hot-toast'
 import {
   getPendientesWeb, getPublicadosWeb,
@@ -9,6 +9,7 @@ import {
 import { optimizeImage } from '../utils/image'
 import { useLocal } from '../context/LocalContext'
 import ConfigPanel from '../components/ConfigPanel'
+import MarketingPanel from '../components/MarketingPanel'
 import styles from './Admin.module.css'
 import { useSearchParams } from 'react-router-dom'
 
@@ -19,9 +20,11 @@ export default function Admin() {
   const { config } = useLocal()
   const [autorizado, setAutorizado] = useState(sessionStorage.getItem('admin_ok') === '1')
   const [codigo, setCodigo] = useState('')
-    const [searchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
   const [tab, setTab] = useState(
-    ['config', 'vidriera'].includes(searchParams.get('tab')) ? 'config' : 'pendientes'
+    ['pendientes', 'publicados', 'config', 'marketing'].includes(searchParams.get('tab'))
+      ? searchParams.get('tab')
+      : 'pendientes'
   )
   const [pendientes, setPendientes] = useState([])
   const [publicados, setPublicados] = useState([])
@@ -140,7 +143,7 @@ export default function Admin() {
 
   const aprobar = async () => {
     if (!form.webCategoria) {
-      toast('Elegí una categoría para publicar', { icon: '⚠️' })
+      toast('Elegí una categoría para publicar', { icon: '️' })
       return
     }
     try {
@@ -204,6 +207,36 @@ export default function Admin() {
     }
   }
 
+  // Tabs unificados
+  const renderTabs = () => (
+    <div className={styles.tabsGrid}>
+      <button
+        className={`${styles.tab} ${tab === 'pendientes' ? styles.tabActiva : ''}`}
+        onClick={() => setTab('pendientes')}
+      >
+        <Inbox size={15} /> Entrantes ({pendientes.length})
+      </button>
+      <button
+        className={`${styles.tab} ${tab === 'publicados' ? styles.tabActiva : ''}`}
+        onClick={() => setTab('publicados')}
+      >
+        <Store size={15} /> Publicados ({publicados.length})
+      </button>
+      <button
+        className={`${styles.tab} ${tab === 'config' ? styles.tabActiva : ''}`}
+        onClick={() => setTab('config')}
+      >
+        <Palette size={15} /> Mi tienda
+      </button>
+      <button
+        className={`${styles.tab} ${tab === 'marketing' ? styles.tabActiva : ''}`}
+        onClick={() => setTab('marketing')}
+      >
+        <Megaphone size={15} /> Marketing
+      </button>
+    </div>
+  )
+
   if (!autorizado) {
     return (
       <div className={styles.gate}>
@@ -225,14 +258,16 @@ export default function Admin() {
     const esEdicion = editando.web_estado === 'publicado'
     return (
       <div className={styles.wrap}>
-        <button className={styles.volver} onClick={() => setEditando(null)}><ArrowLeft size={16} /> Volver</button>
+        <button className={styles.volver} onClick={() => setEditando(null)}>
+          <ArrowLeft size={16} /> Volver
+        </button>
         <h2 className={styles.titulo}>{esEdicion ? 'Editar' : 'Aprobar'}: {editando.nombre}</h2>
 
         <div className={styles.fotoPrincipal}>
           <img src={optimizeImage(editando.imagen_url, 600)} alt={editando.nombre} />
         </div>
 
-        <label className={styles.label}>Sección de la vidriera (obligatoria) *</label>
+        <label className={styles.label}>Sección de la Tienda (obligatoria) *</label>
         {(config.categoriasWeb || []).length > 0 ? (
           <select
             className={styles.input}
@@ -244,7 +279,7 @@ export default function Admin() {
           </select>
         ) : (
           <p style={{ fontSize: '.75rem', color: '#dc2626' }}>
-            No hay secciones creadas. Crealas en ⚙️ Mi vidriera → "Categorías del Catálogo".
+            No hay secciones creadas. Crealas en ⚙️ Mi Tienda → "Categorías del Catálogo".
           </p>
         )}
 
@@ -271,7 +306,7 @@ export default function Admin() {
           <div className={styles.mitad}>
             <label className={styles.check}>
               <input type="checkbox" checked={form.destacado} onChange={e => setForm({ ...form, destacado: e.target.checked })} />
-              ⭐ Destacado en la home
+               Destacado en la home
             </label>
           </div>
         </div>
@@ -311,21 +346,25 @@ export default function Admin() {
     )
   }
 
+  // Rama Marketing
+  if (tab === 'marketing') {
+    return (
+      <div className={styles.wrap}>
+        <h2 className={styles.titulo}>Panel del dueño</h2>
+        {renderTabs()}
+        <div style={{ marginTop: 16 }}>
+          <MarketingPanel />
+        </div>
+      </div>
+    )
+  }
+
+  // Rama Config
   if (tab === 'config') {
     return (
       <div className={styles.wrap}>
         <h2 className={styles.titulo}>Panel del dueño</h2>
-        <div className={styles.tabs}>
-          <button className={styles.tab} onClick={() => setTab('pendientes')}>
-            Pendientes ({pendientes.length})
-          </button>
-          <button className={styles.tab} onClick={() => setTab('publicados')}>
-            Publicados ({publicados.length})
-          </button>
-          <button className={`${styles.tab} ${styles.tabActiva}`} onClick={() => setTab('config')}>
-            ⚙️ Mi vidriera
-          </button>
-        </div>
+        {renderTabs()}
         <div style={{ marginTop: 16 }}>
           <ConfigPanel />
         </div>
@@ -338,17 +377,7 @@ export default function Admin() {
   return (
     <div className={styles.wrap}>
       <h2 className={styles.titulo}>Panel del dueño</h2>
-      <div className={styles.tabs}>
-        <button className={`${styles.tab} ${tab === 'pendientes' ? styles.tabActiva : ''}`} onClick={() => setTab('pendientes')}>
-          Pendientes ({pendientes.length})
-        </button>
-        <button className={`${styles.tab} ${tab === 'publicados' ? styles.tabActiva : ''}`} onClick={() => setTab('publicados')}>
-          Publicados ({publicados.length})
-        </button>
-        <button className={`${styles.tab} ${tab === 'config' ? styles.tabActiva : ''}`} onClick={() => setTab('config')}>
-          ⚙️ Mi vidriera
-        </button>
-      </div>
+      {renderTabs()}
 
       {tab === 'pendientes' && catsLibres.length > 0 && (
         <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap', alignItems: 'center' }}>
@@ -413,13 +442,21 @@ export default function Admin() {
                 <div className={styles.itemAcciones}>
                   {tab === 'pendientes' ? (
                     <>
-                      <button className={styles.btnAprobar} onClick={() => abrirEdicion(p)} title="Aprobar y enriquecer"><Check size={16} /></button>
-                      <button className={styles.btnRechazar} onClick={() => { setRechazando(p); setNotaRechazo('') }} title="Rechazar con nota"><X size={16} /></button>
+                      <button className={styles.btnAprobar} onClick={() => abrirEdicion(p)} title="Aprobar y enriquecer">
+                        <Check size={16} />
+                      </button>
+                      <button className={styles.btnRechazar} onClick={() => { setRechazando(p); setNotaRechazo('') }} title="Rechazar con nota">
+                        <X size={16} />
+                      </button>
                     </>
                   ) : (
                     <>
-                      <button className={styles.btnAprobar} onClick={() => abrirEdicion(p)} title="Editar"><Pencil size={16} /></button>
-                      <button className={styles.btnQuitar} onClick={() => setQuitando(p)} title="Quitar de la web"><X size={16} /></button>
+                      <button className={styles.btnAprobar} onClick={() => abrirEdicion(p)} title="Editar">
+                        <Pencil size={16} />
+                      </button>
+                      <button className={styles.btnQuitar} onClick={() => setQuitando(p)} title="Quitar de la web">
+                        <X size={16} />
+                      </button>
                     </>
                   )}
                 </div>

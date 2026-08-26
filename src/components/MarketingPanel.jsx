@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { getConfigLocal, updateConfigLocal } from '../services/api'
-import { Megaphone, Share2, Music2 } from 'lucide-react'
+import { Megaphone, Share2, Music2, Percent, Newspaper } from 'lucide-react'
 
 const s = {
   card: { background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: 16, marginBottom: 16 },
@@ -10,6 +10,9 @@ const s = {
 }
 
 export default function MarketingPanel() {
+  const [anuncio, setAnuncio] = useState('')
+  const [activarDesc, setActivarDesc] = useState(false)
+  const [pct, setPct] = useState(10)
   const [pixelMeta, setPixelMeta] = useState('')
   const [pixelTiktok, setPixelTiktok] = useState('')
   const [cargando, setCargando] = useState(true)
@@ -19,6 +22,9 @@ export default function MarketingPanel() {
   useEffect(() => {
     getConfigLocal().then(({ data }) => {
       if (data) {
+        setAnuncio(data.anuncio || '')
+        setActivarDesc(data.descuento_transferencia != null)
+        setPct(Number(data.descuento_transferencia) || 10)
         setPixelMeta(data.pixel_meta || '')
         setPixelTiktok(data.pixel_tiktok || '')
       }
@@ -32,13 +38,14 @@ export default function MarketingPanel() {
     }
   }, [cargando])
 
-  // Auto-guardado (mismo patrón que ConfigPanel)
   useEffect(() => {
     if (!listo.current) return
     setEstado('guardando')
     const t = setTimeout(async () => {
       try {
         await updateConfigLocal({
+          anuncio: anuncio.trim() || null,
+          descuento_transferencia: activarDesc ? Number(pct) : null,
           pixel_meta: pixelMeta.trim() || null,
           pixel_tiktok: pixelTiktok.trim() || null
         })
@@ -49,7 +56,7 @@ export default function MarketingPanel() {
       }
     }, 800)
     return () => clearTimeout(t)
-  }, [pixelMeta, pixelTiktok])
+  }, [anuncio, activarDesc, pct, pixelMeta, pixelTiktok])
 
   if (cargando) return <p style={{ fontSize: '.85rem', color: '#6b7280' }}>Cargando...</p>
 
@@ -60,6 +67,44 @@ export default function MarketingPanel() {
         {estado === 'ok' && <span style={{ fontSize: '.72rem', color: '#16a34a', fontWeight: 700 }}>✓ Guardado</span>}
       </div>
 
+      {/* 📢 BARRA DE ANUNCIO (la cinta que se mueve arriba de todo) */}
+      <div style={s.card}>
+        <label style={{ ...s.label, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Newspaper size={14} style={{ color: '#f59e0b' }} /> Barra de anuncio
+        </label>
+        <input
+          style={s.input}
+          value={anuncio}
+          onChange={e => setAnuncio(e.target.value)}
+          placeholder="Ej: 🚚 Envíos gratis superando $150.000"
+        />
+        <p style={s.hint}>
+          Aparece como cinta que se mueve arriba de todo tu tienda.
+          Vacío = no se muestra. Ideal para la promo del mes.
+        </p>
+      </div>
+
+      {/* 💸 DESCUENTOS */}
+      <div style={s.card}>
+        <label style={{ ...s.label, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Percent size={14} style={{ color: '#16a34a' }} /> Descuento por transferencia
+        </label>
+        <p style={{ ...s.hint, marginTop: 0, marginBottom: 10 }}>
+          Mostrá un precio más bajo si te pagan por transferencia (te ahorra comisiones).
+        </p>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, cursor: 'pointer' }}>
+          <input type="checkbox" checked={activarDesc} onChange={e => setActivarDesc(e.target.checked)} style={{ width: 18, height: 18 }} />
+          <span style={{ fontSize: '.9rem', fontWeight: 700 }}>Activar</span>
+        </label>
+        {activarDesc && (
+          <>
+            <label style={s.label}>Porcentaje (%)</label>
+            <input style={s.input} type="number" min="1" max="90" value={pct} onChange={e => setPct(e.target.value)} />
+          </>
+        )}
+      </div>
+
+      {/* 📣 PIXELES */}
       <div style={{ ...s.card, background: '#eff6ff', border: '1px solid #bfdbfe' }}>
         <p style={{ margin: 0, fontSize: '.85rem', fontWeight: 800, color: '#111827', display: 'flex', alignItems: 'center', gap: 6 }}>
           <Megaphone size={16} /> Hacé publicidad y medí TUS campañas

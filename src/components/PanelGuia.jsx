@@ -2,24 +2,19 @@ import { useState } from 'react'
 import { CheckCircle2, Circle, ChevronDown, PartyPopper } from 'lucide-react'
 
 export default function PanelGuia({ datos }) {
+  // 1 item = 1 paso del acordeón. Cero confusión de números.
   const pasos = [
-    { ok: !!datos.logo, t: 'Subí tu logo', d: 'tu marca arriba' },
+    { ok: !!(datos.nombre && datos.logo), t: 'Nombre y logo', d: 'tu identidad' },
     { ok: !!datos.whatsapp, t: 'Cargá tu WhatsApp', d: 'pedidos a tu celu' },
     { ok: datos.categorias > 0, t: 'Creá tus categorías', d: 'ej: Mujer, Deco' },
     { ok: datos.banners > 0, t: 'Armá tu banner', d: 'la portada de tu home' },
-    { ok: datos.fotosCards > 0, t: 'Fotos en las cards', d: 'cada sección con imagen' },
   ]
   const listos = pasos.filter(p => p.ok).length
   const completo = listos === pasos.length
 
-  // 🧠 Auto-comportamiento:
-  // - con pasos pendientes → expandido (guía activa)
-  // - todo listo → colapsado a banner finito (estado de cuenta)
-  // - el dueño puede expandir/colapsar tocando
   const [expandido, setExpandido] = useState(null)
   const abierto = expandido === null ? !completo : expandido
 
-  // ✅ ESTADO DE CUENTA: todo listo y colapsado
   if (completo && !abierto) {
     return (
       <button
@@ -46,7 +41,6 @@ export default function PanelGuia({ datos }) {
     )
   }
 
-  // 📋 GUÍA ACTIVA (o expandida a pedido)
   return (
     <div style={{
       background: completo ? '#f0fdf4' : '#eff6ff',
@@ -59,7 +53,7 @@ export default function PanelGuia({ datos }) {
         <p style={{ margin: '0 0 4px', fontWeight: 800, fontSize: '.95rem', color: '#111827' }}>
           {completo
             ? '🎉 ¡Tu tienda está lista para vender!'
-            : `Configurá tu tienda en 5 minutos · ${listos} de ${pasos.length} listos`}
+            : `Configurá tu tienda en 4 pasos · ${listos} de ${pasos.length} listos`}
         </p>
         {completo && (
           <button
@@ -95,7 +89,7 @@ export default function PanelGuia({ datos }) {
       ))}
 
       <p style={{ margin: '8px 0 0', fontSize: '.72rem', color: '#6b7280' }}>
-        💡 Todo se guarda solo mientras escribís. Mirá el resultado en "Mi vidriera".
+        💡 Todo se guarda solo mientras escribís. Mirá el resultado en "Mi Tienda".
       </p>
     </div>
   )

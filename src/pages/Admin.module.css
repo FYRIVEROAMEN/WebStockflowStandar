@@ -79,3 +79,48 @@
   .wrap { max-width: 960px; padding: 24px; }
   .lista { display: grid; grid-template-columns: 1fr 1fr; }
 }
+
+/* Grilla 2x2 para los 4 tabs del panel */
+.tabsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.tabsGrid .tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--color-borde);
+  background: #fff;
+  font-size: .85rem;
+  font-weight: 700;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all .2s ease;
+  user-select: none;                        /* ← no selecciona texto al tocar */
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent; /* ← sin flash negro en mobile */
+  -webkit-touch-callout: none;
+}
+
+.tabsGrid .tab:hover {
+  border-color: #93c5fd;
+  color: #111827;
+}
+
+/* Activo: gana sobre cualquier .tabActiva viejo del archivo */
+.tabsGrid button.tabActiva,
+.tabsGrid button.tabActiva:hover {
+  background: #111827;
+  border-color: #111827;
+  color: #fff;
+}
+
+.tabsGrid button.tabActiva svg {
+  color: #fff;
+}

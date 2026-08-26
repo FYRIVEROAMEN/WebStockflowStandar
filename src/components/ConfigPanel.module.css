@@ -1,0 +1,63 @@
+/* ---------- genéricos ---------- */
+.card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+
+.label { display: block; font-size: .85rem; font-weight: 700; margin-bottom: 6px; color: #111827; }
+.labelMini { display: block; font-size: .8rem; font-weight: 700; margin-bottom: 4px; color: #111827; }
+
+.input { width: 100%; padding: 10px 12px; border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: .9rem; box-sizing: border-box; }
+.inputMb { margin-bottom: 10px; }
+
+.btn { width: 100%; padding: 12px; border: none; border-radius: 8px; background: #111827; color: #fff; font-weight: 700; font-size: .9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btnAuto { width: auto; padding: 8px 14px; margin: 0; }
+.btnMini { width: auto; padding: 6px 10px; font-size: .72rem; }
+.btnMas { width: auto; padding: 10px 14px; }
+.btnRojo { background: #dc2626; }
+
+.row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.rowFondo { background: #f9fafb; padding: 8px; border-radius: 8px; }
+
+.chip { display: inline-flex; align-items: center; gap: 6px; background: #111827; color: #fff; font-size: .75rem; font-weight: 700; padding: 5px 10px; border-radius: 999px; }
+.chipX { background: none; border: none; color: #9ca3af; cursor: pointer; padding: 0; font-size: .85rem; }
+.chipXRojo { color: #dc2626; font-size: 1rem; }
+
+.hint { font-size: .72rem; color: #6b7280; margin: 8px 0 0; }
+.hintChips { font-size: .72rem; color: #6b7280; margin: 0 0 8px; }
+.hintLista { font-size: .72rem; color: #6b7280; margin: 0 0 12px; }
+.hintBanner { font-size: .72rem; color: #6b7280; margin: 0 0 10px; }
+
+/* ---------- indicador guardado ---------- */
+.estadoRow { display: flex; justify-content: flex-end; min-height: 20px; margin-bottom: 6px; }
+.estadoTexto { font-size: .72rem; color: #6b7280; }
+.estadoOk { font-size: .72rem; color: #16a34a; font-weight: 700; }
+
+/* ---------- paso 1 · logo ---------- */
+.logoRow { display: flex; align-items: center; gap: 10px; }
+.logoImg { width: 56px; height: 56px; object-fit: contain; border-radius: 8px; background: #f3f4f6; }
+.logoPh { width: 56px; height: 56px; border-radius: 8px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+
+/* ---------- paso 3 · catálogo ---------- */
+.chipsRow { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.catAddRow { display: flex; gap: 8px; }
+.flex1 { flex: 1; }
+.vacioTexto { font-size: .8rem; color: #6b7280; }
+.thumbImg { width: 56px; height: 40px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+.thumbPh { width: 56px; height: 40px; border-radius: 6px; background: #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.catNombre { flex: 1; min-width: 0; font-size: .85rem; font-weight: 700; color: #111827; }
+
+/* ---------- paso 4 · banner ---------- */
+.slideInfo { flex: 1; min-width: 0; }
+.slideTitulo { margin: 0; font-size: .85rem; font-weight: 700; color: #111827; }
+.slideSub { margin: 0; font-size: .72rem; color: #6b7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iconBtn { background: none; border: none; cursor: pointer; display: flex; padding: 4px; }
+.iconBtnAzul { color: #2563eb; }
+.iconBtnRojo { color: #dc2626; }
+.formSlide { border: 1.5px dashed #e5e7eb; border-radius: 8px; padding: 12px; margin-top: 8px; }
+.slideThumbRow { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.thumbSlideImg { width: 64px; height: 40px; object-fit: cover; border-radius: 6px; }
+.thumbSlidePh { width: 64px; height: 40px; border-radius: 6px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+.inputSlide { margin-bottom: 8px; margin-top: 8px; }
+
+/* ---------- botón final ---------- */
+.listoBtn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: #111827; color: #fff; font-weight: 800; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; transition: background .3s ease, box-shadow .3s ease; }
+.listoBtnOk { background: #16a34a; box-shadow: 0 4px 14px rgba(22, 163, 74, .4); }
