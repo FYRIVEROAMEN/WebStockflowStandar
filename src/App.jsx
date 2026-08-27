@@ -12,6 +12,7 @@ import Buscar from './pages/Buscar'
 import ScrollToTop from './components/ScrollToTop'
 import NotFound from './pages/NotFound'
 import PixelManager from './components/PixelManager'
+import ScrollTopButton from './components/ScrollTopButton'
 
 // Wrapper para resetear filtros al cambiar de categoría
 function CategoriaConKey() {
@@ -48,6 +49,7 @@ export default function App() {
         {!esAdmin && <Footer />}
         {!esAdmin && <FloatingWhatsApp />}
         {!esAdmin && <PixelManager />}
+        {!esAdmin && <ScrollTopButton />}
       </div>
     </>
   )

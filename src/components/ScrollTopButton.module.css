@@ -1,0 +1,41 @@
+.fab {
+  position: fixed;
+  /* arriba del WhatsApp flotante (que está en bottom: 24px, altura 56px) */
+  right: 20px;
+  bottom: 96px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: #111827;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .18);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity .3s ease, transform .3s ease, background .2s ease;
+  z-index: 90;
+}
+
+.fab:hover { background: #1f2937; }
+.fab:active { transform: scale(.95); }
+
+.fabVisible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* En mobile, WhatsApp puede estar más abajo: subimos el botón */
+@media (max-width: 767px) {
+  .fab {
+    right: 16px;
+    bottom: 88px;
+    width: 44px;
+    height: 44px;
+  }
+}

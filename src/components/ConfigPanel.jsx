@@ -140,7 +140,7 @@ export default function ConfigPanel() {
   }
 
   const salvarSlide = () => {
-    if (!slideForm.imageUrl || slideForm.imageUrl.startsWith('blob:') || !slideForm.titulo.trim()) return
+        if (!slideForm.imageUrl || slideForm.imageUrl.startsWith('blob:')) return
     if (slideForm.id) {
       setHeroSlides(h => h.map(sl => (sl.id === slideForm.id ? { ...slideForm, titulo: slideForm.titulo.trim() } : sl)))
     } else if (heroSlides.length < 3) {
@@ -372,7 +372,7 @@ export default function ConfigPanel() {
                 <img src={sl.imageUrl} alt="" className={styles.thumbImg} />
               )}
               <div className={styles.slideInfo}>
-                <p className={styles.slideTitulo}>{sl.titulo}</p>
+                <p className={styles.slideTitulo}>{sl.titulo || 'Solo imagen'}</p>
                 <p className={styles.slideSub}>{sl.subtitulo}</p>
               </div>
               <button onClick={() => editarSlide(sl)} className={`${styles.iconBtn} ${styles.iconBtnAzul}`} title="Editar"><Pencil size={15} /></button>
@@ -380,7 +380,7 @@ export default function ConfigPanel() {
             </div>
           ))}
 
-          {heroSlides.length < 3 && (
+          {(heroSlides.length < 3 || slideForm.id) && (
             <div className={styles.formSlide}>
               <div className={styles.slideThumbRow}>
                 {slideForm.imageUrl && !slideForm.imageUrl.startsWith('blob:') ? (
@@ -408,11 +408,16 @@ export default function ConfigPanel() {
                 />
               )}
 
-              <input className={`${styles.input} ${styles.inputSlide}`} value={slideForm.titulo} onChange={e => setSlideForm(f => ({ ...f, titulo: e.target.value }))} placeholder="Título (ej: Nueva temporada)" />
-              <input className={`${styles.input} ${styles.inputMb}`} value={slideForm.subtitulo} onChange={e => setSlideForm(f => ({ ...f, subtitulo: e.target.value }))} placeholder="Subtítulo (ej: Lo último ya llegó)" />
-              <button onClick={salvarSlide} disabled={!slideForm.imageUrl || slideForm.imageUrl.startsWith('blob:') || !slideForm.titulo.trim()} className={styles.btn}>
+              <input className={`${styles.input} ${styles.inputSlide}`} value={slideForm.titulo} onChange={e => setSlideForm(f => ({ ...f, titulo: e.target.value }))} placeholder="Título (opcional, ej: Nueva temporada)" />
+              <input className={`${styles.input} ${styles.inputMb}`} value={slideForm.subtitulo} onChange={e => setSlideForm(f => ({ ...f, subtitulo: e.target.value }))} placeholder="Subtítulo (opcional)"/>
+                            <button onClick={salvarSlide} disabled={!slideForm.imageUrl || slideForm.imageUrl.startsWith('blob:')} className={styles.btn}>
                 {slideForm.id ? 'Actualizar slide' : '+ Agregar slide'}
               </button>
+              {slideForm.id && (
+                <button onClick={() => setSlideForm(SLIDE_VACIO)} className={styles.btnCancelar}>
+                  Cancelar edición
+                </button>
+              )}
             </div>
           )}
         </div>

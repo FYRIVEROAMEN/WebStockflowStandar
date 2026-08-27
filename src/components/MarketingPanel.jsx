@@ -1,13 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { getConfigLocal, updateConfigLocal } from '../services/api'
 import { Megaphone, Share2, Music2, Percent, Newspaper } from 'lucide-react'
-
-const s = {
-  card: { background: '#fff', border: '1px solid #e5e7eb', borderRadius: 12, padding: 16, marginBottom: 16 },
-  label: { display: 'block', fontSize: '.85rem', fontWeight: 700, marginBottom: 6, color: '#111827' },
-  input: { width: '100%', padding: '10px 12px', border: '1.5px solid #e5e7eb', borderRadius: 8, fontSize: '.9rem', boxSizing: 'border-box' },
-  hint: { fontSize: '.72rem', color: '#6b7280', margin: '8px 0 0' },
-}
+import styles from './MarketingPanel.module.css'
 
 export default function MarketingPanel() {
   const [anuncio, setAnuncio] = useState('')
@@ -58,91 +52,91 @@ export default function MarketingPanel() {
     return () => clearTimeout(t)
   }, [anuncio, activarDesc, pct, pixelMeta, pixelTiktok])
 
-  if (cargando) return <p style={{ fontSize: '.85rem', color: '#6b7280' }}>Cargando...</p>
+  if (cargando) return <p className={styles.estadoTexto}>Cargando...</p>
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', minHeight: 20, marginBottom: 6 }}>
-        {estado === 'guardando' && <span style={{ fontSize: '.72rem', color: '#6b7280' }}>Guardando…</span>}
-        {estado === 'ok' && <span style={{ fontSize: '.72rem', color: '#16a34a', fontWeight: 700 }}>✓ Guardado</span>}
+      <div className={styles.estadoRow}>
+        {estado === 'guardando' && <span className={styles.estadoTexto}>Guardando…</span>}
+        {estado === 'ok' && <span className={styles.estadoOk}>✓ Guardado</span>}
       </div>
 
-      {/* 📢 BARRA DE ANUNCIO (la cinta que se mueve arriba de todo) */}
-      <div style={s.card}>
-        <label style={{ ...s.label, display: 'flex', alignItems: 'center', gap: 6 }}>
+      {/* 📢 BARRA DE ANUNCIO */}
+      <div className={styles.card}>
+        <label className={`${styles.label} ${styles.labelIcon}`}>
           <Newspaper size={14} style={{ color: '#f59e0b' }} /> Barra de anuncio
         </label>
         <input
-          style={s.input}
+          className={styles.input}
           value={anuncio}
           onChange={e => setAnuncio(e.target.value)}
           placeholder="Ej: 🚚 Envíos gratis superando $150.000"
         />
-        <p style={s.hint}>
+        <p className={styles.hint}>
           Aparece como cinta que se mueve arriba de todo tu tienda.
           Vacío = no se muestra. Ideal para la promo del mes.
         </p>
       </div>
 
       {/* 💸 DESCUENTOS */}
-      <div style={s.card}>
-        <label style={{ ...s.label, display: 'flex', alignItems: 'center', gap: 6 }}>
+      <div className={styles.card}>
+        <label className={`${styles.label} ${styles.labelIcon}`}>
           <Percent size={14} style={{ color: '#16a34a' }} /> Descuento por transferencia
         </label>
-        <p style={{ ...s.hint, marginTop: 0, marginBottom: 10 }}>
+        <p className={`${styles.hint} ${styles.hintMb}`}>
           Mostrá un precio más bajo si te pagan por transferencia (te ahorra comisiones).
         </p>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10, cursor: 'pointer' }}>
-          <input type="checkbox" checked={activarDesc} onChange={e => setActivarDesc(e.target.checked)} style={{ width: 18, height: 18 }} />
-          <span style={{ fontSize: '.9rem', fontWeight: 700 }}>Activar</span>
+        <label className={styles.checkRow}>
+          <input type="checkbox" className={styles.checkInput} checked={activarDesc} onChange={e => setActivarDesc(e.target.checked)} />
+          <span className={styles.checkTexto}>Activar</span>
         </label>
         {activarDesc && (
           <>
-            <label style={s.label}>Porcentaje (%)</label>
-            <input style={s.input} type="number" min="1" max="90" value={pct} onChange={e => setPct(e.target.value)} />
+            <label className={styles.label}>Porcentaje (%)</label>
+            <input className={styles.input} type="number" min="1" max="90" value={pct} onChange={e => setPct(e.target.value)} />
           </>
         )}
       </div>
 
       {/* 📣 PIXELES */}
-      <div style={{ ...s.card, background: '#eff6ff', border: '1px solid #bfdbfe' }}>
-        <p style={{ margin: 0, fontSize: '.85rem', fontWeight: 800, color: '#111827', display: 'flex', alignItems: 'center', gap: 6 }}>
+      <div className={`${styles.card} ${styles.cardInfo}`}>
+        <p className={styles.tituloInfo}>
           <Megaphone size={16} /> Hacé publicidad y medí TUS campañas
         </p>
-        <p style={{ ...s.hint, marginTop: 6 }}>
+        <p className={`${styles.hint} ${styles.hintMt}`}>
           Pegá acá tu ID de píxel y tu tienda va a empezar a medir las campañas
           que hagas en Meta o TikTok. Sin píxel = sin scripts extra (tu web sigue rápida).
         </p>
       </div>
 
-      <div style={s.card}>
-        <label style={{ ...s.label, display: 'flex', alignItems: 'center', gap: 6 }}>
+      <div className={styles.card}>
+        <label className={`${styles.label} ${styles.labelIcon}`}>
           <Share2 size={14} style={{ color: '#1877f2' }} /> Meta Pixel (Facebook / Instagram Ads)
         </label>
         <input
-          style={s.input}
+          className={styles.input}
           value={pixelMeta}
           onChange={e => setPixelMeta(e.target.value.replace(/\D/g, ''))}
           placeholder="Ej: 123456789012345"
           inputMode="numeric"
         />
-        <p style={s.hint}>
+        <p className={styles.hint}>
           Lo encontrás en Meta Events Manager → "Conectar datos" → tu píxel.
           Son 15-16 números.
         </p>
       </div>
 
-      <div style={s.card}>
-        <label style={{ ...s.label, display: 'flex', alignItems: 'center', gap: 6 }}>
+      <div className={styles.card}>
+        <label className={`${styles.label} ${styles.labelIcon}`}>
           <Music2 size={14} style={{ color: '#111' }} /> TikTok Pixel
         </label>
         <input
-          style={s.input}
+          className={styles.input}
           value={pixelTiktok}
           onChange={e => setPixelTiktok(e.target.value.trim())}
           placeholder="Ej: C1A2B3C4D5E6F7G8H9I0"
         />
-        <p style={s.hint}>
+        <p className={styles.hint}>
           Lo encontrás en TikTok Ads Manager → Eventos → píxeles.
         </p>
       </div>

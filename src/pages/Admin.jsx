@@ -40,6 +40,9 @@ export default function Admin() {
   const [catDestino, setCatDestino] = useState('')
   const [descMasiva, setDescMasiva] = useState('')
   const [aprobandoMasivo, setAprobandoMasivo] = useState(false)
+  const [quitandoMasivo, setQuitandoMasivo] = useState(false)
+  const [confirmandoQuitarMasivo, setConfirmandoQuitarMasivo] = useState(false)
+
 
   const cargar = async () => {
     setLoading(true)
@@ -57,6 +60,9 @@ export default function Admin() {
     if (autorizado) cargar()
   }, [autorizado])
 
+  // Al cambiar de tab, la selección se limpia (no cruza entre pestañas)
+  useEffect(() => { setSeleccion([]) }, [tab])
+
   const catsLibres = [...new Set(pendientes.map(p => (p.categoria || '').trim()).filter(Boolean))]
 
   const pendientesFiltrados = filtroCat
@@ -67,8 +73,10 @@ export default function Admin() {
     setSeleccion(s => s.includes(id) ? s.filter(x => x !== id) : [...s, id])
   }
 
+  // Generalizado: funciona tanto en Pendientes como en Publicados
   const toggleTodos = () => {
-    const idsFiltrados = pendientesFiltrados.map(p => p.id)
+    const lista = tab === 'pendientes' ? pendientesFiltrados : publicados
+    const idsFiltrados = lista.map(p => p.id)
     const todosSel = idsFiltrados.every(id => seleccion.includes(id))
     if (todosSel) {
       setSeleccion(seleccion.filter(id => !idsFiltrados.includes(id)))
@@ -94,6 +102,20 @@ export default function Admin() {
       toast.error('Error en aprobación masiva: ' + err.message)
     }
     setAprobandoMasivo(false)
+  }
+
+  const quitarMasivo = async () => {
+    setQuitandoMasivo(true)
+    try {
+      await Promise.all(seleccion.map(id => quitarDeWeb(id)))
+      toast.success(`${seleccion.length} productos quitados de la web`)
+      setSeleccion([])
+      setConfirmandoQuitarMasivo(false)
+      cargar()
+    } catch (err) {
+      toast.error('Error al quitar masivo: ' + err.message)
+    }
+    setQuitandoMasivo(false)
   }
 
   const entrar = () => {
@@ -143,7 +165,7 @@ export default function Admin() {
 
   const aprobar = async () => {
     if (!form.webCategoria) {
-      toast('Elegí una categoría para publicar', { icon: '️' })
+      toast('Elegí una categoría para publicar', { icon: '⚠️' })
       return
     }
     try {
@@ -206,8 +228,8 @@ export default function Admin() {
       toast.error('Error al quitar: ' + err.message)
     }
   }
+   
 
-  // Tabs unificados
   const renderTabs = () => (
     <div className={styles.tabsGrid}>
       <button
@@ -278,8 +300,8 @@ export default function Admin() {
             {(config.categoriasWeb || []).map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         ) : (
-          <p style={{ fontSize: '.75rem', color: '#dc2626' }}>
-            No hay secciones creadas. Crealas en ⚙️ Mi Tienda → "Categorías del Catálogo".
+          <p className={styles.errorTexto}>
+            No hay secciones creadas. Crealas en 🎨 Mi Tienda → "Categorías del Catálogo".
           </p>
         )}
 
@@ -306,7 +328,7 @@ export default function Admin() {
           <div className={styles.mitad}>
             <label className={styles.check}>
               <input type="checkbox" checked={form.destacado} onChange={e => setForm({ ...form, destacado: e.target.checked })} />
-               Destacado en la home
+              ⭐ Destacado en la home
             </label>
           </div>
         </div>
@@ -346,26 +368,24 @@ export default function Admin() {
     )
   }
 
-  // Rama Marketing
   if (tab === 'marketing') {
     return (
       <div className={styles.wrap}>
         <h2 className={styles.titulo}>Panel del dueño</h2>
         {renderTabs()}
-        <div style={{ marginTop: 16 }}>
+        <div className={styles.contenidoTab}>
           <MarketingPanel />
         </div>
       </div>
     )
   }
 
-  // Rama Config
   if (tab === 'config') {
     return (
       <div className={styles.wrap}>
         <h2 className={styles.titulo}>Panel del dueño</h2>
         {renderTabs()}
-        <div style={{ marginTop: 16 }}>
+        <div className={styles.contenidoTab}>
           <ConfigPanel />
         </div>
       </div>
@@ -380,10 +400,9 @@ export default function Admin() {
       {renderTabs()}
 
       {tab === 'pendientes' && catsLibres.length > 0 && (
-        <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div className={styles.toolbar}>
           <select
-            className={styles.input}
-            style={{ flex: '1 1 auto', minWidth: 140 }}
+            className={`${styles.input} ${styles.toolbarSelect}`}
             value={filtroCat}
             onChange={e => { setFiltroCat(e.target.value); setSeleccion([]) }}
           >
@@ -394,16 +413,20 @@ export default function Admin() {
             })}
           </select>
           {filtroCat && pendientesFiltrados.length > 0 && (
-            <button
-              onClick={toggleTodos}
-              style={{
-                padding: '10px 14px', borderRadius: 8, border: '1.5px solid var(--color-borde)',
-                background: '#fff', fontSize: '.8rem', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap'
-              }}
-            >
+            <button onClick={toggleTodos} className={styles.btnSecundario}>
               {pendientesFiltrados.every(p => seleccion.includes(p.id)) ? 'Desmarcar todos' : 'Marcar todos'}
             </button>
           )}
+        </div>
+      )}
+
+      
+
+      {tab === 'publicados' && publicados.length > 0 && (
+        <div className={styles.toolbarDer}>
+          <button onClick={toggleTodos} className={styles.btnSecundario}>
+            {publicados.every(p => seleccion.includes(p.id)) ? 'Desmarcar todos' : 'Marcar todos'}
+          </button>
         </div>
       )}
 
@@ -420,14 +443,13 @@ export default function Admin() {
           {lista.map(p => {
             const estaSel = seleccion.includes(p.id)
             return (
-              <div key={p.id} className={styles.item} style={estaSel ? { background: '#eff6ff' } : {}}>
-                {tab === 'pendientes' && (
-                  <label style={{ display: 'flex', alignItems: 'center', marginRight: 6, cursor: 'pointer', flexShrink: 0 }}>
+              <div key={p.id} className={`${styles.item} ${estaSel ? styles.itemSel : ''}`}>
+                {(tab === 'pendientes' || tab === 'publicados') && (
+                  <label className={styles.checkItem}>
                     <input
                       type="checkbox"
                       checked={estaSel}
                       onChange={() => toggleSel(p.id)}
-                      style={{ width: 18, height: 18, cursor: 'pointer' }}
                     />
                   </label>
                 )}
@@ -466,44 +488,31 @@ export default function Admin() {
         </div>
       )}
 
-      {tab === 'pendientes' && seleccion.length > 0 && (
-        <div style={{
-          position: 'sticky', bottom: 0, marginTop: 16,
-          background: '#fff', border: '1.5px solid #2563eb', borderRadius: 12,
-          padding: 12, display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap',
-          boxShadow: '0 -4px 16px rgba(0,0,0,.08)'
-        }}>
-          <span style={{ fontSize: '.85rem', fontWeight: 700, color: '#2563eb' }}>
+      {seleccion.length > 0 && (
+        <div className={styles.barraMasiva}>
+          <span className={styles.barraContador}>
             {seleccion.length} seleccionado{seleccion.length === 1 ? '' : 's'}
           </span>
-          <select
-            className={styles.input}
-            style={{ flex: '1 1 auto', minWidth: 120, margin: 0 }}
-            value={catDestino}
-            onChange={e => setCatDestino(e.target.value)}
-          >
-            <option value="">Mandar a...</option>
-            {(config.categoriasWeb || []).map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
-          <button
-            onClick={aprobarMasivo}
-            disabled={aprobandoMasivo}
-            style={{
-              padding: '10px 18px', border: 'none', borderRadius: 8,
-              background: '#16a34a', color: '#fff', fontWeight: 700,
-              fontSize: '.85rem', cursor: aprobandoMasivo ? 'wait' : 'pointer',
-              display: 'flex', alignItems: 'center', gap: 6
-            }}
-          >
-            <Check size={16} /> {aprobandoMasivo ? 'Publicando...' : 'Publicar todos'}
-          </button>
-          <button
-            onClick={() => setSeleccion([])}
-            style={{
-              padding: '10px 12px', border: '1px solid #e5e7eb', borderRadius: 8,
-              background: '#fff', fontSize: '.8rem', cursor: 'pointer'
-            }}
-          >
+          {tab === 'pendientes' ? (
+            <>
+              <select
+                className={`${styles.input} ${styles.barraSelect}`}
+                value={catDestino}
+                onChange={e => setCatDestino(e.target.value)}
+              >
+                <option value="">Mandar a...</option>
+                {(config.categoriasWeb || []).map(c => <option key={c} value={c}>{c}</option>)}
+              </select>
+              <button onClick={aprobarMasivo} disabled={aprobandoMasivo} className={styles.btnVerde}>
+                <Check size={16} /> {aprobandoMasivo ? 'Publicando...' : 'Publicar todos'}
+              </button>
+            </>
+          ) : (
+            <button onClick={() => setConfirmandoQuitarMasivo(true)} className={styles.btnRojoMasivo}>
+              <X size={16} /> Quitar de la web
+            </button>
+          )}
+          <button onClick={() => setSeleccion([])} className={styles.btnLimpiar}>
             Limpiar
           </button>
         </div>
@@ -537,6 +546,21 @@ export default function Admin() {
             <div className={styles.modalBtns}>
               <button className={styles.modalCancel} onClick={() => setRechazando(null)}>Cancelar</button>
               <button className={styles.modalDanger} onClick={confirmarRechazo}>Rechazar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {confirmandoQuitarMasivo && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalBox}>
+            <p className={styles.modalTexto}>¿Quitar {seleccion.length} productos de la web?</p>
+            <p className={styles.modalSub}>Podés volver a enviarlos desde la gestión.</p>
+            <div className={styles.modalBtns}>
+              <button className={styles.modalCancel} onClick={() => setConfirmandoQuitarMasivo(false)}>Cancelar</button>
+              <button className={styles.modalDanger} onClick={quitarMasivo} disabled={quitandoMasivo}>
+                {quitandoMasivo ? 'Quitando...' : 'Sí, quitar'}
+              </button>
             </div>
           </div>
         </div>

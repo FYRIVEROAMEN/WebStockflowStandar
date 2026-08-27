@@ -1,0 +1,91 @@
+.card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.cardInfo {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+.label {
+  display: block;
+  font-size: .85rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #111827;
+}
+
+.labelIcon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: .9rem;
+  box-sizing: border-box;
+}
+
+.hint {
+  font-size: .72rem;
+  color: #6b7280;
+  margin: 8px 0 0;
+}
+
+.hintMt { margin-top: 6px; }
+.hintMb { margin: 0 0 10px; }
+
+.tituloInfo {
+  margin: 0;
+  font-size: .85rem;
+  font-weight: 800;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.checkRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.checkInput {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.checkTexto {
+  font-size: .9rem;
+  font-weight: 700;
+}
+
+.estadoRow {
+  display: flex;
+  justify-content: flex-end;
+  min-height: 20px;
+  margin-bottom: 6px;
+}
+
+.estadoTexto {
+  font-size: .72rem;
+  color: #6b7280;
+}
+
+.estadoOk {
+  font-size: .72rem;
+  color: #16a34a;
+  font-weight: 700;
+}

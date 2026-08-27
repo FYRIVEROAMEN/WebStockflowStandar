@@ -124,3 +124,60 @@
 .tabsGrid button.tabActiva svg {
   color: #fff;
 }
+
+/* ---------- toolbars de selección ---------- */
+.toolbar { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
+.toolbarDer { display: flex; justify-content: flex-end; margin-top: 12px; }
+.toolbarSelect { flex: 1 1 auto; min-width: 140px; }
+
+.btnSecundario {
+  padding: 10px 14px; border-radius: 8px;
+  border: 1.5px solid var(--color-borde); background: #fff;
+  font-size: .8rem; font-weight: 700; cursor: pointer;
+  white-space: nowrap; transition: border-color .2s ease;
+}
+.btnSecundario:hover { border-color: #93c5fd; }
+
+/* ---------- barra inferior de acción masiva ---------- */
+.barraMasiva {
+  position: sticky; bottom: 0; margin-top: 16px;
+  background: #fff; border: 1.5px solid #2563eb;
+  border-radius: 12px; padding: 12px;
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  box-shadow: 0 -4px 16px rgba(0,0,0,.08);
+}
+.barraContador { font-size: .85rem; font-weight: 700; color: #2563eb; }
+.barraSelect { flex: 1 1 auto; min-width: 120px; margin: 0; }
+
+.btnVerde {
+  padding: 10px 18px; border: none; border-radius: 8px;
+  background: #16a34a; color: #fff; font-weight: 700;
+  font-size: .85rem; cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  transition: background .2s ease;
+}
+.btnVerde:hover { background: #15803d; }
+.btnVerde:disabled { cursor: wait; opacity: .7; }
+
+.btnRojoMasivo {
+  padding: 10px 18px; border: none; border-radius: 8px;
+  background: #dc2626; color: #fff; font-weight: 700;
+  font-size: .85rem; cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  transition: background .2s ease;
+}
+.btnRojoMasivo:hover { background: #b91c1c; }
+
+.btnLimpiar {
+  padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px;
+  background: #fff; font-size: .8rem; cursor: pointer;
+}
+
+/* ---------- items seleccionables ---------- */
+.itemSel { background: #eff6ff; }
+.checkItem { display: flex; align-items: center; margin-right: 6px; cursor: pointer; flex-shrink: 0; }
+.checkItem input { width: 18px; height: 18px; cursor: pointer; }
+
+/* ---------- varios ---------- */
+.errorTexto { font-size: .75rem; color: #dc2626; }
+.contenidoTab { margin-top: 16px; }
