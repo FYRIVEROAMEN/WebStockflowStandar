@@ -1,12 +1,35 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
+import { LOCAL_ID } from '../services/supabaseClient'
 
 const CartContext = createContext(null)
 
-const keyOf = (i) => `${i.id}-${i.variante_id || 'legacy'}`
+// 🏢 Key scopleada por tenant: cada local tiene SU carrito
+const storageKey = () => `sf_cart_${LOCAL_ID || 'anon'}`
+
+const keyOf = (i) => `${i.id}-${i.variante_id || 'legacy'}-${i.talle || ''}-${i.color || ''}`
+
+const loadCart = () => {
+  try {
+    const raw = localStorage.getItem(storageKey())
+    return raw ? JSON.parse(raw) : []
+  } catch { return [] }
+}
+
+const saveCart = (cart) => {
+  try { localStorage.setItem(storageKey(), JSON.stringify(cart)) } catch {}
+}
 
 export function CartProvider({ children }) {
-  const [cart, setCart] = useState([])
+  const [cart, setCart] = useState(() => loadCart())
   const [toast, setToast] = useState(null)
+
+  //  Persistencia: cada cambio va a localStorage
+  useEffect(() => { saveCart(cart) }, [cart])
+
+  //  Si cambia el tenant (dev con ?dominio=), recargar el carrito del nuevo
+  useEffect(() => {
+    setCart(loadCart())
+  }, [LOCAL_ID])
 
   const showToast = (nombre, detalle) => {
     setToast({ nombre, detalle, key: Date.now() })
@@ -18,14 +41,14 @@ export function CartProvider({ children }) {
     const talle = variante?.talle || null
     const color = variante?.color || null
     const precio = variante?.precio ?? producto.web_precio ?? producto.precio
-    const stockMax = variante?.stock ?? producto.stock
+    const stockMax = variante?.stock ?? producto.stock ?? 999
 
     setCart(prev => {
-      const key = `${producto.id}-${varianteId || 'legacy'}-${talle || ''}`
-      const existing = prev.find(i => keyOf(i) + `-${i.talle || ''}` === key)
+      const key = keyOf({ id: producto.id, variante_id: varianteId, talle, color })
+      const existing = prev.find(i => keyOf(i) === key)
       if (existing) {
-        if (existing.quantity + 1 > (stockMax ?? 999)) return prev
-        return prev.map(i => (keyOf(i) + `-${i.talle || ''}` === key ? { ...i, quantity: i.quantity + 1 } : i))
+        if (existing.quantity + 1 > stockMax) return prev
+        return prev.map(i => (keyOf(i) === key ? { ...i, quantity: i.quantity + 1 } : i))
       }
       return [...prev, {
         id: producto.id,
@@ -40,21 +63,23 @@ export function CartProvider({ children }) {
       }]
     })
 
-    const detalle = [talle && `Talle ${talle}`, color].filter(Boolean).join(' · ')
+    const detalle = [talle && `Talle ${talle}`, color && `Color ${color}`].filter(Boolean).join(' · ')
     showToast(producto.nombre, detalle)
   }
 
-  const setQty = (id, varianteId, qty) => {
-    if (qty < 1) return remove(id, varianteId)
+  const setQty = (id, varianteId, talle, color, qty) => {
+    if (qty < 1) return remove(id, varianteId, talle, color)
     setCart(prev => prev.map(i =>
-      i.id === id && (i.variante_id || null) === (varianteId || null)
+      keyOf(i) === keyOf({ id, variante_id: varianteId, talle, color })
         ? { ...i, quantity: Math.min(qty, i.stock ?? qty) }
         : i
     ))
   }
 
-  const remove = (id, varianteId) => {
-    setCart(prev => prev.filter(i => !(i.id === id && (i.variante_id || null) === (varianteId || null))))
+  const remove = (id, varianteId, talle, color) => {
+    setCart(prev => prev.filter(i =>
+      keyOf(i) !== keyOf({ id, variante_id: varianteId, talle, color })
+    ))
   }
 
   const clear = () => setCart([])

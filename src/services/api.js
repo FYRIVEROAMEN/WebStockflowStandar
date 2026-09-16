@@ -1,10 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-)
-const LOCAL_ID = import.meta.env.VITE_LOCAL_ID || 1
+import { supabase, LOCAL_ID } from './supabaseClient'
 
 // ---------- CATÁLOGO PÚBLICO ----------
 export const getPublicadosWeb = async () => {
@@ -197,11 +191,36 @@ export const buscarProductosWeb = async (query) => {
 
 // Cuenta productos esperando aprobación (para el badge del navbar)
 export async function getCountPendientesWeb() {
-  const localId = Number(import.meta.env.VITE_LOCAL_ID || 1)
+  const localId = LOCAL_ID
   const { count, error } = await supabase
     .from('productos')
     .select('id', { count: 'exact', head: true })
     .eq('web_estado', 'pendiente')
     .eq('local_id', localId)
   return { data: error ? 0 : (count || 0) }
+}
+
+// ---------- CHECKOUT ----------
+export const crearPedido = async ({ direccion, telefono, nota, items }) => {
+  const { data, error } = await supabase.rpc('crear_pedido_web', {
+    p_local_id: LOCAL_ID,
+    p_direccion: direccion,
+    p_telefono: telefono,
+    p_nota: nota || null,
+    p_items: items
+  })
+  if (error) throw error
+  return { data }
+}
+
+export const getMisPedidos = async () => {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session?.user) return { data: [] }
+  const { data, error } = await supabase
+    .from('pedidos_web')
+    .select('*, items:pedidos_web_items(*)')
+    .eq('customer_id', session.user.id)          // ← capa 1: el espejo del RLS
+    .order('creado_en', { ascending: false })
+  if (error) throw error
+  return { data }
 }

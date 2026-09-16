@@ -6,8 +6,11 @@ import App from './App'
 import { CartProvider } from './context/CartContext'
 import { LocalProvider } from './context/LocalContext'
 import './styles/theme.css'
+import { resolveLocalId } from './services/supabaseClient'
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+// 🏢 Primero descubrir el local, recién después renderizar
+resolveLocalId().finally(() => {
+  ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
     
@@ -30,4 +33,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       </CartProvider>
     </BrowserRouter>
   </React.StrictMode>
-)
+  )
+})  

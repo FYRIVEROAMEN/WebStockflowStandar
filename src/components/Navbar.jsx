@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Menu, ShoppingCart, Package, X, User, Search } from 'lucide-react'
+import { Menu, ShoppingCart, Package, X, Search } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 import { useLocal } from '../context/LocalContext'
 import { getCountPendientesWeb } from '../services/api'
 import styles from './Navbar.module.css'
+import UserMenu from './UserMenu'
+import { useAuth } from '../context/AuthContext'
 
 export default function Navbar() {
   const { cartCount } = useCart()
   const { config } = useLocal()
+  const { user, logout } = useAuth()
   const { pathname } = useLocation()
   const [menuOpen, setMenuOpen] = useState(false)
   const [compacto, setCompacto] = useState(false)
@@ -94,11 +97,7 @@ export default function Navbar() {
               </span>
             )}
           </Link>
-          <Link to="/admin" className={styles.admBtn} title="Administrador">
-            <User size={16} />
-            <span>admin</span>
-            {pendientes > 0 && <span className={styles.admBadge}>{pendientes}</span>}
-          </Link>
+          <UserMenu />
         </div>
 
         <nav className={styles.navDesktop}>
@@ -151,6 +150,15 @@ export default function Navbar() {
               🔐 Admin
               {pendientes > 0 && <span className={styles.drawerBadge}>{pendientes} por aprobar</span>}
             </Link>
+            {user && (
+              <button
+                className={styles.drawerLink}
+                style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }}
+                onClick={() => { setMenuOpen(false); logout() }}
+              >
+                🚪 Cerrar sesión
+              </button>
+            )}
           </nav>
         </>
       )}

@@ -8,11 +8,14 @@ import ProductCard from '../components/ProductCard'
 import styles from './Home.module.css'
 import { optimizeImage } from '../utils/image'
 import { getConfigLocal } from '../services/api'
+import { useAuth } from '../context/AuthContext'
+import { LOCAL_ID } from '../services/supabaseClient' 
 
 export default function Home() {
   const { config } = useLocal()
   const [productos, setProductos] = useState([])
   const [loading, setLoading] = useState(true)
+  const { user, profile } = useAuth()
 
     const [secImages, setSecImages] = useState({})
 
@@ -39,7 +42,7 @@ export default function Home() {
   const sinDep = productos.filter(p => !p.web_categoria || !deps.includes(p.web_categoria))
   const destacados = productos.filter(p => p.web_destacado)
 
-    const esDueno = sessionStorage.getItem('admin_ok') === '1'
+    const esDueno = !!user && profile?.rol === 'owner' && Number(profile?.local_id) === Number(LOCAL_ID)
   const tieneSecciones = (config.categoriasWeb || []).length > 0  // ✅ arreglado
 
   // 🌱 Estado vacío: sin productos publicados todavía

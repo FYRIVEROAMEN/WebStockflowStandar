@@ -1,0 +1,27 @@
+.wrap { max-width: 560px; margin: 40px auto; padding: 0 16px 80px; }
+.titulo { font-size: 1.5rem; margin-bottom: 20px; }
+.card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 20px; margin-bottom: 16px; }
+.cardTitulo { font-size: 1rem; margin-bottom: 14px; }
+.label { display: block; font-size: .75rem; color: #6b7280; margin: 10px 0 4px; }
+.input { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: .9rem; }
+.input:disabled { background: #f3f4f6; color: #6b7280; }
+.boton { margin-top: 16px; width: 100%; padding: 12px; background: #111827; color: #fff; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
+.boton:disabled { opacity: .6; cursor: wait; }
+.vacio { color: #6b7280; font-size: .9rem; padding: 12px 0; }
+
+.pedido { border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px; margin-bottom: 12px; }
+.pedidoHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.pedidoId { font-weight: 700; font-size: .9rem; }
+.pedidoFecha { font-size: .75rem; color: #6b7280; margin-bottom: 8px; }
+.pedidoItems { list-style: none; font-size: .85rem; color: #374151; }
+.pedidoItems li { margin-bottom: 4px; }
+.pedidoTotal { text-align: right; font-size: .9rem; margin-top: 8px; }
+.pedidoDireccion { font-size: .75rem; color: #6b7280; margin-top: 6px; }
+.badgeRecibido, .badgeConfirmado, .badgeEnviado, .badgeEntregado, .badgeCancelado {
+  font-size: .7rem; font-weight: 700; padding: 3px 8px; border-radius: 999px;
+}
+.badgeRecibido { background: #fef3c7; color: #92400e; }
+.badgeConfirmado { background: #dbeafe; color: #1e40af; }
+.badgeEnviado { background: #e0e7ff; color: #3730a3; }
+.badgeEntregado { background: #dcfce7; color: #166534; }
+.badgeCancelado { background: #fee2e2; color: #991b1b; }

@@ -13,6 +13,14 @@ import ScrollToTop from './components/ScrollToTop'
 import NotFound from './pages/NotFound'
 import PixelManager from './components/PixelManager'
 import ScrollTopButton from './components/ScrollTopButton'
+import { AuthProvider } from './context/AuthContext'
+import ProtectedRoute from './components/ProtectedRoute'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import CrearTienda from './pages/CrearTienda'
+import CustomerRoute from './components/CustomerRoute'
+import MiCuenta from './pages/MiCuenta'
+import Checkout from './pages/Checkout'
 
 // Wrapper para resetear filtros al cambiar de categoría
 function CategoriaConKey() {
@@ -22,13 +30,13 @@ function CategoriaConKey() {
 
 export default function App() {
   const { pathname } = useLocation()
-  
+
   // Zona pública: todo visible
   // Zona admin (/admin y sub-rutas futuras): solo lo esencial
   const esAdmin = pathname.startsWith('/admin')
 
   return (
-    <>
+    <AuthProvider>
       <ScrollToTop />
       <Navbar />
       <div className="app-shell">
@@ -40,9 +48,14 @@ export default function App() {
             <Route path="/seccion/:nombre" element={<Seccion />} />
             <Route path="/producto/:id" element={<Producto />} />
             <Route path="/carrito" element={<Carrito />} />
-            <Route path="/admin" element={<Admin />} />
-            <Route path="/admin/*" element={<Admin />} />
+            <Route path="/login" element={<Login />} />
+             <Route path="/register" element={<Register />} />
+            <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
+            <Route path="/admin/*" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
+            <Route path="/crear-tienda" element={<CrearTienda />} />
+            <Route path="/mi-cuenta" element={<CustomerRoute><MiCuenta /></CustomerRoute>} />
+            <Route path="/checkout" element={<CustomerRoute><Checkout /></CustomerRoute>} />
           </Routes>
         </main>
         {/* Footer y botón flotante solo en zona pública */}
@@ -51,6 +64,6 @@ export default function App() {
         {!esAdmin && <PixelManager />}
         {!esAdmin && <ScrollTopButton />}
       </div>
-    </>
+    </AuthProvider>
   )
 }

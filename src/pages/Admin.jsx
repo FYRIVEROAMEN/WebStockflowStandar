@@ -18,8 +18,7 @@ const PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
 
 export default function Admin() {
   const { config } = useLocal()
-  const [autorizado, setAutorizado] = useState(sessionStorage.getItem('admin_ok') === '1')
-  const [codigo, setCodigo] = useState('')
+
   const [searchParams] = useSearchParams()
   const [tab, setTab] = useState(
     ['pendientes', 'publicados', 'config', 'marketing'].includes(searchParams.get('tab'))
@@ -43,7 +42,6 @@ export default function Admin() {
   const [quitandoMasivo, setQuitandoMasivo] = useState(false)
   const [confirmandoQuitarMasivo, setConfirmandoQuitarMasivo] = useState(false)
 
-
   const cargar = async () => {
     setLoading(true)
     try {
@@ -56,11 +54,8 @@ export default function Admin() {
     setLoading(false)
   }
 
-  useEffect(() => {
-    if (autorizado) cargar()
-  }, [autorizado])
+  useEffect(() => { cargar() }, [])
 
-  // Al cambiar de tab, la selección se limpia (no cruza entre pestañas)
   useEffect(() => { setSeleccion([]) }, [tab])
 
   const catsLibres = [...new Set(pendientes.map(p => (p.categoria || '').trim()).filter(Boolean))]
@@ -73,7 +68,6 @@ export default function Admin() {
     setSeleccion(s => s.includes(id) ? s.filter(x => x !== id) : [...s, id])
   }
 
-  // Generalizado: funciona tanto en Pendientes como en Publicados
   const toggleTodos = () => {
     const lista = tab === 'pendientes' ? pendientesFiltrados : publicados
     const idsFiltrados = lista.map(p => p.id)
@@ -89,10 +83,7 @@ export default function Admin() {
     if (!catDestino) return toast('Elegí a qué categoría mandarlos', { icon: '⚠️' })
     setAprobandoMasivo(true)
     try {
-      await aprobarMasivoWeb(seleccion, {
-        webCategoria: catDestino,
-        descripcion: descMasiva
-      })
+      await aprobarMasivoWeb(seleccion, { webCategoria: catDestino, descripcion: descMasiva })
       toast.success(`${seleccion.length} productos publicados en ${catDestino}`)
       setSeleccion([])
       setCatDestino('')
@@ -116,15 +107,6 @@ export default function Admin() {
       toast.error('Error al quitar masivo: ' + err.message)
     }
     setQuitandoMasivo(false)
-  }
-
-  const entrar = () => {
-    if (codigo === (import.meta.env.VITE_ADMIN_CODE || 'stockflow2026')) {
-      sessionStorage.setItem('admin_ok', '1')
-      setAutorizado(true)
-    } else {
-      toast.error('Código incorrecto')
-    }
   }
 
   const subirFoto = async (file) => {
@@ -164,14 +146,10 @@ export default function Admin() {
   }
 
   const aprobar = async () => {
-    if (!form.webCategoria) {
-      toast('Elegí una categoría para publicar', { icon: '⚠️' })
-      return
-    }
+    if (!form.webCategoria) { toast('Elegí una categoría para publicar', { icon: '⚠️' }); return }
     try {
       await aprobarProductoWeb(editando.id, {
-        descripcion: form.descripcion,
-        fotos: form.fotos,
+        descripcion: form.descripcion, fotos: form.fotos,
         destacado: form.destacado,
         precioWeb: form.precioWeb === '' ? null : Number(form.precioWeb),
         webCategoria: form.webCategoria
@@ -179,20 +157,14 @@ export default function Admin() {
       setEditando(null)
       cargar()
       toast.success('¡Publicado!')
-    } catch (err) {
-      toast.error('Error al aprobar: ' + err.message)
-    }
+    } catch (err) { toast.error('Error al aprobar: ' + err.message) }
   }
 
   const guardarEdicion = async () => {
-    if (!form.webCategoria) {
-      toast('Elegí una categoría para publicar', { icon: '⚠️' })
-      return
-    }
+    if (!form.webCategoria) { toast('Elegí una categoría para publicar', { icon: '⚠️' }); return }
     try {
       await editarPublicadoWeb(editando.id, {
-        descripcion: form.descripcion,
-        fotos: form.fotos,
+        descripcion: form.descripcion, fotos: form.fotos,
         destacado: form.destacado,
         precioWeb: form.precioWeb === '' ? null : Number(form.precioWeb),
         webCategoria: form.webCategoria
@@ -200,9 +172,7 @@ export default function Admin() {
       setEditando(null)
       cargar()
       toast.success('Cambios guardados')
-    } catch (err) {
-      toast.error('Error al guardar: ' + err.message)
-    }
+    } catch (err) { toast.error('Error al guardar: ' + err.message) }
   }
 
   const confirmarRechazo = async () => {
@@ -213,9 +183,7 @@ export default function Admin() {
       setNotaRechazo('')
       cargar()
       toast.success('Rechazo enviado al local')
-    } catch (err) {
-      toast.error('Error al rechazar: ' + err.message)
-    }
+    } catch (err) { toast.error('Error al rechazar: ' + err.message) }
   }
 
   const confirmarQuitar = async () => {
@@ -224,57 +192,25 @@ export default function Admin() {
       setQuitando(null)
       cargar()
       toast.success('Producto quitado de la web')
-    } catch (err) {
-      toast.error('Error al quitar: ' + err.message)
-    }
+    } catch (err) { toast.error('Error al quitar: ' + err.message) }
   }
-   
 
   const renderTabs = () => (
     <div className={styles.tabsGrid}>
-      <button
-        className={`${styles.tab} ${tab === 'pendientes' ? styles.tabActiva : ''}`}
-        onClick={() => setTab('pendientes')}
-      >
+      <button className={`${styles.tab} ${tab === 'pendientes' ? styles.tabActiva : ''}`} onClick={() => setTab('pendientes')}>
         <Inbox size={15} /> Entrantes ({pendientes.length})
       </button>
-      <button
-        className={`${styles.tab} ${tab === 'publicados' ? styles.tabActiva : ''}`}
-        onClick={() => setTab('publicados')}
-      >
+      <button className={`${styles.tab} ${tab === 'publicados' ? styles.tabActiva : ''}`} onClick={() => setTab('publicados')}>
         <Store size={15} /> Publicados ({publicados.length})
       </button>
-      <button
-        className={`${styles.tab} ${tab === 'config' ? styles.tabActiva : ''}`}
-        onClick={() => setTab('config')}
-      >
+      <button className={`${styles.tab} ${tab === 'config' ? styles.tabActiva : ''}`} onClick={() => setTab('config')}>
         <Palette size={15} /> Mi tienda
       </button>
-      <button
-        className={`${styles.tab} ${tab === 'marketing' ? styles.tabActiva : ''}`}
-        onClick={() => setTab('marketing')}
-      >
+      <button className={`${styles.tab} ${tab === 'marketing' ? styles.tabActiva : ''}`} onClick={() => setTab('marketing')}>
         <Megaphone size={15} /> Marketing
       </button>
     </div>
   )
-
-  if (!autorizado) {
-    return (
-      <div className={styles.gate}>
-        <h2 className={styles.gateTitulo}>🔐 Panel del dueño</h2>
-        <input
-          type="password"
-          className={styles.gateInput}
-          placeholder="Código de acceso"
-          value={codigo}
-          onChange={e => setCodigo(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && entrar()}
-        />
-        <button className={styles.gateBtn} onClick={entrar}>Entrar</button>
-      </div>
-    )
-  }
 
   if (editando) {
     const esEdicion = editando.web_estado === 'publicado'
@@ -291,11 +227,7 @@ export default function Admin() {
 
         <label className={styles.label}>Sección de la Tienda (obligatoria) *</label>
         {(config.categoriasWeb || []).length > 0 ? (
-          <select
-            className={styles.input}
-            value={form.webCategoria}
-            onChange={e => setForm({ ...form, webCategoria: e.target.value })}
-          >
+          <select className={styles.input} value={form.webCategoria} onChange={e => setForm({ ...form, webCategoria: e.target.value })}>
             <option value="">Elegí dónde va...</option>
             {(config.categoriasWeb || []).map(c => <option key={c} value={c}>{c}</option>)}
           </select>
@@ -307,9 +239,7 @@ export default function Admin() {
 
         <label className={styles.label}>Descripción para la web</label>
         <textarea
-          className={styles.textarea}
-          rows={4}
-          value={form.descripcion}
+          className={styles.textarea} rows={4} value={form.descripcion}
           onChange={e => setForm({ ...form, descripcion: e.target.value })}
           placeholder="Contale al cliente lo lindo de este producto..."
         />
@@ -317,10 +247,7 @@ export default function Admin() {
         <div className={styles.fila}>
           <div className={styles.mitad}>
             <label className={styles.label}>Precio web (opcional)</label>
-            <input
-              className={styles.input}
-              type="number"
-              value={form.precioWeb}
+            <input className={styles.input} type="number" value={form.precioWeb}
               onChange={e => setForm({ ...form, precioWeb: e.target.value })}
               placeholder={`Usar $${Number(editando.precio).toLocaleString('es-AR')}`}
             />
@@ -338,10 +265,8 @@ export default function Admin() {
           {form.fotos.map((f, i) => (
             <div key={i} className={styles.fotoExtra}>
               <img src={optimizeImage(f, 150)} alt={`extra ${i + 1}`} />
-              <button
-                className={styles.fotoBorrar}
-                onClick={() => setForm(f2 => ({ ...f2, fotos: f2.fotos.filter((_, j) => j !== i) }))}
-              >
+              <button className={styles.fotoBorrar}
+                onClick={() => setForm(f2 => ({ ...f2, fotos: f2.fotos.filter((_, j) => j !== i) }))}>
                 <Trash2 size={12} />
               </button>
             </div>
@@ -373,9 +298,7 @@ export default function Admin() {
       <div className={styles.wrap}>
         <h2 className={styles.titulo}>Panel del dueño</h2>
         {renderTabs()}
-        <div className={styles.contenidoTab}>
-          <MarketingPanel />
-        </div>
+        <div className={styles.contenidoTab}><MarketingPanel /></div>
       </div>
     )
   }
@@ -385,9 +308,7 @@ export default function Admin() {
       <div className={styles.wrap}>
         <h2 className={styles.titulo}>Panel del dueño</h2>
         {renderTabs()}
-        <div className={styles.contenidoTab}>
-          <ConfigPanel />
-        </div>
+        <div className={styles.contenidoTab}><ConfigPanel /></div>
       </div>
     )
   }
@@ -401,11 +322,8 @@ export default function Admin() {
 
       {tab === 'pendientes' && catsLibres.length > 0 && (
         <div className={styles.toolbar}>
-          <select
-            className={`${styles.input} ${styles.toolbarSelect}`}
-            value={filtroCat}
-            onChange={e => { setFiltroCat(e.target.value); setSeleccion([]) }}
-          >
+          <select className={`${styles.input} ${styles.toolbarSelect}`} value={filtroCat}
+            onChange={e => { setFiltroCat(e.target.value); setSeleccion([]) }}>
             <option value="">Todas las categorías ({pendientes.length})</option>
             {catsLibres.map(c => {
               const n = pendientes.filter(p => (p.categoria || '').toLowerCase() === c.toLowerCase()).length
@@ -419,8 +337,6 @@ export default function Admin() {
           )}
         </div>
       )}
-
-      
 
       {tab === 'publicados' && publicados.length > 0 && (
         <div className={styles.toolbarDer}>
@@ -446,11 +362,7 @@ export default function Admin() {
               <div key={p.id} className={`${styles.item} ${estaSel ? styles.itemSel : ''}`}>
                 {(tab === 'pendientes' || tab === 'publicados') && (
                   <label className={styles.checkItem}>
-                    <input
-                      type="checkbox"
-                      checked={estaSel}
-                      onChange={() => toggleSel(p.id)}
-                    />
+                    <input type="checkbox" checked={estaSel} onChange={() => toggleSel(p.id)} />
                   </label>
                 )}
                 <img src={optimizeImage(p.imagen_url, 150)} alt={p.nombre} className={styles.itemImg} />
@@ -464,21 +376,13 @@ export default function Admin() {
                 <div className={styles.itemAcciones}>
                   {tab === 'pendientes' ? (
                     <>
-                      <button className={styles.btnAprobar} onClick={() => abrirEdicion(p)} title="Aprobar y enriquecer">
-                        <Check size={16} />
-                      </button>
-                      <button className={styles.btnRechazar} onClick={() => { setRechazando(p); setNotaRechazo('') }} title="Rechazar con nota">
-                        <X size={16} />
-                      </button>
+                      <button className={styles.btnAprobar} onClick={() => abrirEdicion(p)} title="Aprobar y enriquecer"><Check size={16} /></button>
+                      <button className={styles.btnRechazar} onClick={() => { setRechazando(p); setNotaRechazo('') }} title="Rechazar con nota"><X size={16} /></button>
                     </>
                   ) : (
                     <>
-                      <button className={styles.btnAprobar} onClick={() => abrirEdicion(p)} title="Editar">
-                        <Pencil size={16} />
-                      </button>
-                      <button className={styles.btnQuitar} onClick={() => setQuitando(p)} title="Quitar de la web">
-                        <X size={16} />
-                      </button>
+                      <button className={styles.btnAprobar} onClick={() => abrirEdicion(p)} title="Editar"><Pencil size={16} /></button>
+                      <button className={styles.btnQuitar} onClick={() => setQuitando(p)} title="Quitar de la web"><X size={16} /></button>
                     </>
                   )}
                 </div>
@@ -495,11 +399,8 @@ export default function Admin() {
           </span>
           {tab === 'pendientes' ? (
             <>
-              <select
-                className={`${styles.input} ${styles.barraSelect}`}
-                value={catDestino}
-                onChange={e => setCatDestino(e.target.value)}
-              >
+              <select className={`${styles.input} ${styles.barraSelect}`} value={catDestino}
+                onChange={e => setCatDestino(e.target.value)}>
                 <option value="">Mandar a...</option>
                 {(config.categoriasWeb || []).map(c => <option key={c} value={c}>{c}</option>)}
               </select>
@@ -512,9 +413,7 @@ export default function Admin() {
               <X size={16} /> Quitar de la web
             </button>
           )}
-          <button onClick={() => setSeleccion([])} className={styles.btnLimpiar}>
-            Limpiar
-          </button>
+          <button onClick={() => setSeleccion([])} className={styles.btnLimpiar}>Limpiar</button>
         </div>
       )}
 
@@ -536,13 +435,8 @@ export default function Admin() {
           <div className={styles.modalBox}>
             <p className={styles.modalTexto}>Motivo del rechazo</p>
             <p className={styles.modalSub}>El local lo verá en la gestión</p>
-            <input
-              className={styles.input}
-              value={notaRechazo}
-              onChange={e => setNotaRechazo(e.target.value)}
-              placeholder="Ej: foto borrosa, sin precio..."
-              autoFocus
-            />
+            <input className={styles.input} value={notaRechazo} onChange={e => setNotaRechazo(e.target.value)}
+              placeholder="Ej: foto borrosa, sin precio..." autoFocus />
             <div className={styles.modalBtns}>
               <button className={styles.modalCancel} onClick={() => setRechazando(null)}>Cancelar</button>
               <button className={styles.modalDanger} onClick={confirmarRechazo}>Rechazar</button>

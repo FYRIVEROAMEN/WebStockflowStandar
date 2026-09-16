@@ -1,0 +1,50 @@
+.wrap { position: relative; }
+
+.boton {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 999px;
+  background: #fff; color: #111827; font-size: .85rem; font-weight: 600;
+  cursor: pointer; text-decoration: none;
+}
+.boton:hover { background: #f9fafb; }
+
+.avatar {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #111827; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem; font-weight: 800; flex-shrink: 0;
+}
+
+.nombre {
+  max-width: 110px; overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+
+.menu {
+  position: absolute; right: 0; top: calc(100% + 8px);
+  min-width: 200px; background: #fff; border: 1px solid #e5e7eb;
+  border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,.12);
+  overflow: hidden; z-index: 60;
+}
+
+.mail {
+  padding: 10px 14px; font-size: .72rem; color: #6b7280;
+  border-bottom: 1px solid #f3f4f6;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.item {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 12px 14px; font-size: .85rem; color: #111827;
+  background: none; border: none; cursor: pointer;
+  text-decoration: none; text-align: left;
+}
+.item:hover { background: #f3f4f6; }
+
+.salir { color: #dc2626; border-top: 1px solid #f3f4f6; }
+
+.badge {
+  margin-left: auto; background: #f59e0b; color: #fff;
+  font-size: .65rem; font-weight: 800; border-radius: 999px;
+  padding: 2px 7px;
+}
