@@ -52,15 +52,23 @@ export default function Checkout() {
         precio: i.precio,
         cantidad: i.quantity
       }))
-      const { data: pedidoId } = await crearPedido({
+            const { data: pedidoId } = await crearPedido({
         direccion: direccion.trim(),
         telefono: telefono.trim(),
         nota: nota.trim(),
         items
       })
+      // 🎉 Resumen para la pantalla de éxito (capturado ANTES de vaciar el carrito)
+      const resumen = {
+        pedidoId,
+        items: cart.map(i => ({ cantidad: i.quantity, nombre: i.nombre, talle: i.talle, color: i.color, precio: i.precio })),
+        total,
+        totalTransf,
+        direccion: direccion.trim()
+      }
+      localStorage.setItem('ss_ultimo_pedido', JSON.stringify(resumen))
       clear()
-      toast.success('¡Pedido recibido! 🎉')
-      navigate('/mi-cuenta')
+      navigate('/pedido-exitoso', { state: resumen })
     } catch (err) {
       toast.error(err.message || 'Error al crear el pedido')
     }

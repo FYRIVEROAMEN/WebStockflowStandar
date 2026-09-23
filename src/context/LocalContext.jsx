@@ -10,32 +10,39 @@ export function LocalProvider({ children }) {
     categoriasWeb: [],
     logoUrl: ''
   })
+  const [cargando, setCargando] = useState(true)
+  const [hostNoEncontrado, setHostNoEncontrado] = useState(false)
 
   const cargar = async () => {
+    setCargando(true)
     try {
       const { data } = await getConfigLocal()
       if (data) {
         setConfig({
-          ...data,   // ← 🔑 TODO el jsonb crudo pasa: whatsapp, facebook,
-                     //    hero_slides, sec_images y CUALQUIER key futura,
-                     //    sin tocar este archivo nunca más
-          // Alias camelCase para el código ya escrito (retrocompatibilidad)
+          ...data,
           nombreLocal: data.nombre_local || '',
           anuncio: data.anuncio || import.meta.env.VITE_ANUNCIO || '',
           descuentoTransferencia: Number(data.descuento_transferencia ?? 0),
           categoriasWeb: data.web_categorias || [],
           logoUrl: data.logo_url || ''
         })
+        setHostNoEncontrado(false)
+      } else {
+        setHostNoEncontrado(true)
       }
     } catch (err) {
+      // Si falla la config (404, RLS, etc.) → asumimos host desconocido
       console.error('Error cargando config del local:', err)
+      setHostNoEncontrado(true)
+    } finally {
+      setCargando(false)
     }
   }
 
   useEffect(() => { cargar() }, [])
 
   return (
-    <LocalContext.Provider value={{ config, refresh: cargar }}>
+    <LocalContext.Provider value={{ config, refresh: cargar, hostNoEncontrado, cargando }}>
       {children}
     </LocalContext.Provider>
   )
