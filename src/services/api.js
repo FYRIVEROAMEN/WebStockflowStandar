@@ -8,6 +8,7 @@ export const getPublicadosWeb = async () => {
     .eq('local_id', LOCAL_ID)
     .eq('web_estado', 'publicado')
     .eq('activo', true)
+    .eq('variantes.activo', true)   // ← AGREGAR
     .order('web_aprobado_en', { ascending: false })
   if (error) throw error
   return { data }
@@ -19,6 +20,7 @@ export const getProductoWeb = async (id) => {
     .select('*, variantes(id, talle, color, stock, precio, imagen_url)')
     .eq('id', id)
     .eq('local_id', LOCAL_ID)
+    .eq('variantes.activo', true)   // ← AGREGAR: el embed ignora fantasmas
     .single()
   if (error) throw error
   return { data }

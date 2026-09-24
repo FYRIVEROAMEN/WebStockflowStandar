@@ -47,7 +47,7 @@ export default function TenantNoExiste() {
         </p>
 
         <a
-          href={crearUrl}
+          href={portalUrl}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: 8,
             background: '#08285B', color: '#fff',
@@ -68,14 +68,13 @@ export default function TenantNoExiste() {
 
         <div style={{ marginTop: 20 }}>
           <a
-            href={portalUrl}
+            href={`${portalUrl}/login`}
             style={{
               color: '#6b7280', fontSize: '.9rem',
-              textDecoration: 'underline',
-              textUnderlineOffset: 3
+              textDecoration: 'underline', textUnderlineOffset: 3
             }}
           >
-            Conocer StockShop →
+            ¿Ya tenés tienda? Ingresá →
           </a>
         </div>
 
