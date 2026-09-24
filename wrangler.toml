@@ -1,0 +1,21 @@
+name = "webstockflowstandar"
+main = "worker/worker.js"
+compatibility_date = "2024-11-01"
+
+# Assets del SPA (build de Vite)
+# not_found_handling replica el fallback SPA de hoy:
+# rutas profundas (/producto/22) → index.html → router
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+run_worker_first = true 
+
+[vars]
+SUPABASE_URL = "https://rhdlvhuntoukdckdflwq.supabase.co"
+# ⚠️ Copiar la anon key desde src/services/supabaseClient.js o .env.local
+# (es la key PÚBLICA del SPA, no la service_role: segura para el edge)
+SUPABASE_ANON_KEY = "sb_publishable_8g81123lMleOAt5d4yN3LA_UMvU0MLR"
+
+# FUTURO S3: descomentar y el Worker proxya los assets desde allá
+# ORIGIN_URL = "https://tu-bucket.s3.sa-east-1.amazonaws.com"
