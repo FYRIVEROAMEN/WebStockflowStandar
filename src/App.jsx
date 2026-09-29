@@ -24,6 +24,7 @@ import Checkout from './pages/Checkout'
 import PedidoExito from './pages/PedidoExito'
 import TenantNoExiste from './pages/TenantNoExiste'
 import { useLocal } from './context/LocalContext'
+import MetaTags from './components/MetaTags'
 
 // Wrapper para resetear filtros al cambiar de categoría
 function CategoriaConKey() {
@@ -61,6 +62,7 @@ export default function App() {
 
   return (
     <AuthProvider>
+      <MetaTags /> 
       <ScrollToTop />
       <Navbar />
       <div className="app-shell">
@@ -89,6 +91,7 @@ export default function App() {
         {!esAdmin && <PixelManager />}
         {!esAdmin && <ScrollTopButton />}
       </div>
+      
     </AuthProvider>
   )
 }
