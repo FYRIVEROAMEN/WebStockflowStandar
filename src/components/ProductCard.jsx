@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ShoppingCart, Check, Eye } from 'lucide-react'
+import { ShoppingCart, Check, Eye, Flame } from 'lucide-react'
 import { optimizeImage } from '../utils/image'
 import { useCart } from '../context/CartContext'
 import { useLocal } from '../context/LocalContext'
@@ -22,7 +22,7 @@ export default function ProductCard({ producto }) {
 
   const variantes = producto.variantes || []
   const sinVariantes = variantes.length === 0
-    const coloresMap = new Map()
+  const coloresMap = new Map()
   for (const v of variantes) {
     const raw = (v.color || '').trim()
     if (!raw) continue
@@ -36,6 +36,13 @@ export default function ProductCard({ producto }) {
   const DESC_TRANSF = Number(config.descuentoTransferencia || 0)
   const precioLista = Number(producto.web_precio ?? producto.precio)
   const precioTransf = DESC_TRANSF > 0 ? precioLista * (1 - DESC_TRANSF / 100) : null
+
+  // 🔥 OFERTA: gorra puesta + chip de motivo + descuento real si aplica
+  const tieneOferta = !!producto.web_destacado
+  const precioOriginal = Number(producto.precio || 0)
+  const hayDescuentoReal = tieneOferta && precioLista > 0 && precioLista < precioOriginal
+  const pctDesc = hayDescuentoReal ? Math.round((1 - precioLista / precioOriginal) * 100) : 0
+  const motivoOferta = producto.web_oferta_motivo
 
   const stockTotal = sinVariantes ? producto.stock : variantes.reduce((s, v) => s + v.stock, 0)
   const esNuevo = producto.web_aprobado_en &&
@@ -58,6 +65,20 @@ export default function ProductCard({ producto }) {
         ) : (
           <div className={styles.sinFoto}>🛍️</div>
         )}
+
+        {/* 🔥 CHIPS DE OFERTA (arriba a la izquierda) */}
+        {tieneOferta && (
+          <div className={styles.ofertaChips}>
+            {hayDescuentoReal && (
+              <span className={styles.ofertaDesc}>-{pctDesc}%</span>
+            )}
+            <span className={styles.ofertaMotivo}>
+              <Flame size={10} /> {motivoOferta || 'Oferta'}
+            </span>
+          </div>
+        )}
+
+        {/* Badges informativos (abajo, como siempre) */}
         <div className={styles.badges}>
           {esNuevo && <span className={styles.badgeNuevo}>Nuevo</span>}
           {colores.length > 1 && <span className={styles.badgeColores}>{colores.length} colores</span>}
@@ -67,7 +88,20 @@ export default function ProductCard({ producto }) {
 
       <p className={styles.nombre}>{producto.nombre}</p>
 
-      <p className={styles.precio}>${Number(precioLista).toLocaleString('es-AR', { minimumFractionDigits: 2 })}</p>
+      {/* Precio: tachado si hay descuento real, sino normal */}
+      {hayDescuentoReal ? (
+        <div className={styles.precioBox}>
+          <span className={styles.precioTachado}>
+            ${Number(precioOriginal).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+          </span>
+          <p className={`${styles.precio} ${styles.precioOferta}`}>
+            ${Number(precioLista).toLocaleString('es-AR', { minimumFractionDigits: 2 })}
+          </p>
+        </div>
+      ) : (
+        <p className={styles.precio}>${Number(precioLista).toLocaleString('es-AR', { minimumFractionDigits: 2 })}</p>
+      )}
+
       {precioTransf && (
         <p className={styles.precioTransf}>
           💵 ${Number(precioTransf).toLocaleString('es-AR', { minimumFractionDigits: 2 })} con transferencia

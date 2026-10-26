@@ -4,14 +4,12 @@ import { supabase, LOCAL_ID } from './supabaseClient'
 export const getPublicadosWeb = async () => {
   const { data, error } = await supabase
     .from('productos')
-    .select('*, variantes(id, talle, color, stock, precio, imagen_url)')
-    .eq('local_id', LOCAL_ID)
+    .select('*')
     .eq('web_estado', 'publicado')
-    .eq('activo', true)
-    .eq('variantes.activo', true)   // ← AGREGAR
-    .order('web_aprobado_en', { ascending: false })
+    .eq('local_id', LOCAL_ID)
+    .order('web_aprobado_en', { ascending: false })   // último aprobado primero
   if (error) throw error
-  return { data }
+  return { data: data || [] }
 }
 
 export const getProductoWeb = async (id) => {
@@ -149,16 +147,17 @@ export const aprobarMasivoWeb = async (ids, { webCategoria, descripcion }) => {
   return { data }
 }
 
-export const editarPublicadoWeb = async (productoId, { descripcion, fotos, destacado, precioWeb, webCategoria }) => {
+export const editarPublicadoWeb = async (productoId, { descripcion, fotos, destacado, precioWeb, webCategoria, ofertaMotivo } = {}) => {
+  const patch = {}
+  if (webCategoria !== undefined) patch.web_categoria = webCategoria || null
+  if (descripcion !== undefined) patch.web_descripcion = descripcion || null
+  if (fotos !== undefined) patch.web_fotos = fotos || []
+  if (destacado !== undefined) patch.web_destacado = destacado === true
+  if (precioWeb !== undefined) patch.web_precio = precioWeb
+  if (ofertaMotivo !== undefined) patch.web_oferta_motivo = ofertaMotivo || null
   const { data, error } = await supabase
     .from('productos')
-    .update({
-      web_categoria: webCategoria || null,
-      web_descripcion: descripcion || null,
-      web_fotos: fotos || [],
-      web_destacado: destacado || false,
-      web_precio: precioWeb ?? null
-    })
+    .update(patch)
     .eq('id', productoId)
     .eq('local_id', LOCAL_ID)
   if (error) throw error
@@ -223,6 +222,28 @@ export const getMisPedidos = async () => {
     .select('*, items:pedidos_web_items(*)')
     .eq('customer_id', session.user.id)          // ← capa 1: el espejo del RLS
     .order('creado_en', { ascending: false })
+  if (error) throw error
+  return { data }
+}
+
+
+// 🔥 OFERTAS: poner/quitar la gorra en lote
+export const setOfertaMasivoWeb = async (ids, { motivo, precioWeb } = {}) => {
+  const patch = { web_destacado: true, web_oferta_motivo: motivo || null }
+  if (precioWeb !== undefined && precioWeb !== null && precioWeb !== '') {
+    patch.web_precio = Number(precioWeb)
+  }
+  const { data, error } = await supabase
+    .from('productos').update(patch).in('id', ids).eq('local_id', LOCAL_ID)
+  if (error) throw error
+  return { data }
+}
+
+export const quitarOfertaMasivoWeb = async (ids) => {
+  const { data, error } = await supabase
+    .from('productos')
+    .update({ web_destacado: false, web_oferta_motivo: null })
+    .in('id', ids).eq('local_id', LOCAL_ID)
   if (error) throw error
   return { data }
 }

@@ -45,7 +45,7 @@ export default function Home() {
     const esDueno = !!user && profile?.rol === 'owner' && Number(profile?.local_id) === Number(LOCAL_ID)
   const tieneSecciones = (config.categoriasWeb || []).length > 0  // ✅ arreglado
 
-  // 🌱 Estado vacío: sin productos publicados todavía
+   // 🌱 Estado vacío: sin productos publicados todavía
   if (!loading && productos.length === 0) {
     return (
       <div className={styles.home}>
@@ -92,43 +92,60 @@ export default function Home() {
     )
   }
 
-  return (
+   return (
     <div className={styles.home}>
-       <BarraAnuncio /> 
-      <BannerPromo /> 
+      <BarraAnuncio />
+      <BannerPromo />
 
-             {/* 3 cards de secciones (patrón SKM) — con foto custom estilo SKM */}
-        {!loading && secciones.length > 0 && (
-          <div className={styles.promos}>
-            {secciones.slice(0, 4).map((sec, i) => {
-              const img = secImages[sec.nombre]
-              return (
-                <Link
-                  key={sec.nombre}
-                  to={`/seccion/${encodeURIComponent(sec.nombre)}`}
-                  className={`${styles.promo} ${img ? styles.promoConFoto : styles['promo' + ((i % 4) + 1)]}`}
-                >
-                  {img && (
-                    <>
-                      <img src={optimizeImage(img, 700)} alt="" className={styles.promoImg} loading="lazy" decoding="async" />
-                      <div className={styles.promoOverlay} />
-                    </>
-                  )}
-                  <p className={styles.promoTitulo}>{sec.nombre}</p>
-                  <p className={styles.promoSub}>
-                    {sec.items.length} {sec.items.length === 1 ? 'producto' : 'productos'}
-                  </p>
-                  <span className={styles.promoBtn}>Ver todo</span>
-                </Link>
-              )
-            })}
+      {/* 1 · SELECTORES DE CATEGORÍA (cards SKM con foto custom) */}
+      {!loading && secciones.length > 0 && (
+        <div className={styles.promos}>
+          {secciones.slice(0, 4).map((sec, i) => {
+            const img = secImages[sec.nombre]
+            return (
+              <Link
+                key={sec.nombre}
+                to={`/seccion/${encodeURIComponent(sec.nombre)}`}
+                className={`${styles.promo} ${img ? styles.promoConFoto : styles['promo' + ((i % 4) + 1)]}`}
+              >
+                {img && (
+                  <>
+                    <img src={optimizeImage(img, 700)} alt="" className={styles.promoImg} loading="lazy" decoding="async" />
+                    <div className={styles.promoOverlay} />
+                  </>
+                )}
+                <p className={styles.promoTitulo}>{sec.nombre}</p>
+                <p className={styles.promoSub}>
+                  {sec.items.length} {sec.items.length === 1 ? 'producto' : 'productos'}
+                </p>
+                <span className={styles.promoBtn}>Ver todo</span>
+              </Link>
+            )
+          })}
+        </div>
+      )}
+
+      {/* 2 · 🔥 OFERTAS (debajo de los selectores, no arriba) */}
+      {!loading && destacados.length > 0 && (
+        <section className={styles.seccion}>
+          <div className={styles.seccionHeader}>
+            <h2 className={styles.titulo}>🔥 Ofertas</h2>
           </div>
-        )}
+          <div className={destacados.length < 3 ? styles.grilla : styles.carrusel}>
+            {destacados.slice(0, 10).map(p => (
+              <div key={p.id} className={destacados.length < 3 ? '' : styles.carruselItem}>
+                <ProductCard producto={p} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {loading ? (
         <p className={styles.vacio}>Cargando catálogo...</p>
       ) : (
         <>
+          {/* 3 · Secciones por categoría */}
           {secciones.map(sec => (
             <section key={sec.nombre} className={styles.seccion}>
               <div className={styles.seccionHeader}>
@@ -147,20 +164,12 @@ export default function Home() {
             </section>
           ))}
 
+          {/* 4 · Otros (productos sin categoría) */}
           {sinDep.length > 0 && (
             <section className={styles.seccion}>
               <h2 className={styles.titulo}>Otros</h2>
               <div className={styles.grilla}>
                 {sinDep.map(p => <ProductCard key={p.id} producto={p} />)}
-              </div>
-            </section>
-          )}
-
-          {destacados.length > 0 && (
-            <section className={styles.seccion}>
-              <h2 className={styles.titulo}>⭐ Destacados</h2>
-              <div className={styles.grilla}>
-                {destacados.map(p => <ProductCard key={p.id} producto={p} />)}
               </div>
             </section>
           )}

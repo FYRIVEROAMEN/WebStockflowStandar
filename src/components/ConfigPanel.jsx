@@ -43,12 +43,16 @@ export default function ConfigPanel() {
   // 🎉 Botón "Listo"
   const [celebrando, setCelebrando] = useState(false)
 
+
   const completos = {
     1: !!(nombreLocal.trim() && logoUrl),
     2: whatsapp.replace(/\D/g, '').length >= 8,
     3: categoriasWeb.length > 0,
     4: heroSlides.length > 0
   }
+
+  const refreshRef = useRef(refresh)
+useEffect(() => { refreshRef.current = refresh }, [refresh])
 
   useEffect(() => {
     if (cargando) return
@@ -89,37 +93,37 @@ export default function ConfigPanel() {
   }, [cargando])
 
   useEffect(() => {
-    if (!listo.current) return
-    setEstadoGuardado('guardando')
-    const t = setTimeout(async () => {
-      try {
-        await updateConfigLocal({
-          nombre_local: nombreLocal.trim() || null,
-          logo_url: logoUrl || null,
-          whatsapp: whatsapp.trim() || null,
-          email: email.trim() || null,
-          direccion: direccion.trim() || null,
-          envio_info: envioInfo.trim() || null,
-          facebook: facebook.trim() || null,
-          instagram: instagram.trim() || null,
-          twitter: twitter.trim() || null,
-          youtube: youtube.trim() || null,
-          tiktok: tiktok.trim() || null,
-          web_categorias: categoriasWeb,
-          hero_slides: heroSlides,
-          sec_images: secImages
-        })
-        await refresh()
-        setEstadoGuardado('ok')
-      } catch (err) {
-        console.error('Error guardando:', err)
-        setEstadoGuardado('idle')
-      }
-    }, 800)
-    return () => clearTimeout(t)
-  }, [nombreLocal, logoUrl, whatsapp, email, direccion, envioInfo,
-      facebook, instagram, twitter, youtube, tiktok,
-      categoriasWeb, heroSlides, secImages, refresh])
+  if (!listo.current) return
+  setEstadoGuardado('guardando')
+  const t = setTimeout(async () => {
+    try {
+      await updateConfigLocal({
+        nombre_local: nombreLocal.trim() || null,
+        logo_url: logoUrl || null,
+        whatsapp: whatsapp.trim() || null,
+        email: email.trim() || null,
+        direccion: direccion.trim() || null,
+        envio_info: envioInfo.trim() || null,
+        facebook: facebook.trim() || null,
+        instagram: instagram.trim() || null,
+        twitter: twitter.trim() || null,
+        youtube: youtube.trim() || null,
+        tiktok: tiktok.trim() || null,
+        web_categorias: categoriasWeb,
+        hero_slides: heroSlides,
+        sec_images: secImages
+      })
+      await refreshRef.current()
+      setEstadoGuardado('ok')
+    } catch (err) {
+      console.error('Error guardando:', err)
+      setEstadoGuardado('idle')
+    }
+  }, 800)
+  return () => clearTimeout(t)
+}, [nombreLocal, logoUrl, whatsapp, email, direccion, envioInfo,
+    facebook, instagram, twitter, youtube, tiktok,
+    categoriasWeb, heroSlides, secImages])
 
   const subirLogo = async (e) => {
     const file = e.target.files[0]

@@ -6,6 +6,7 @@
 
 /* ---------- LAYOUT ---------- */
 .wrap { max-width: 700px; margin: 0 auto; padding: 16px; }
+.wrapConBarra { padding-bottom: 6rem; }
 .titulo { font-size: 1.3rem; font-weight: 800; margin-bottom: 12px; }
 .volver { display: inline-flex; align-items: center; gap: 4px; background: none; border: none; color: var(--color-texto-suave); font-size: .9rem; margin-bottom: 8px; }
 
@@ -14,19 +15,106 @@
 .tab { flex: 1; padding: 10px; border-radius: 10px; border: 1.5px solid var(--color-borde); background: #fff; font-weight: 700; font-size: .85rem; color: var(--color-texto-suave); cursor: pointer; }
 .tabActiva { border-color: var(--color-primario); color: var(--color-primario); background: #eff6ff; }
 
+/* Grilla de tabs del panel */
+.tabsGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.tabsGrid .tab { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 12px; border-radius: 10px; border: 1.5px solid var(--color-borde); background: #fff; font-size: .85rem; font-weight: 700; color: #6b7280; cursor: pointer; transition: all .2s ease; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
+.tabsGrid .tab:hover { border-color: #93c5fd; color: #111827; }
+.tabsGrid button.tabActiva,
+.tabsGrid button.tabActiva:hover { background: #111827; border-color: #111827; color: #fff; }
+.tabsGrid button.tabActiva svg { color: #fff; }
+.tabBadge { background: #dc2626; color: white; border-radius: 9999px; font-size: 0.625rem; font-weight: 800; padding: 0 0.375rem; margin-left: 0.25rem; }
+
+/* ---------- SEGMENTED (Todos / Publicados / Entrantes) ---------- */
+.segmented { display: flex; gap: 0.375rem; background: #f3f4f6; border-radius: 0.75rem; padding: 0.25rem; margin: 0.75rem 0; }
+.segBtn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.375rem; border: none; background: transparent; border-radius: 0.625rem; padding: 0.5rem 0.75rem; font-size: 0.8125rem; font-weight: 700; color: #6b7280; cursor: pointer; transition: all 0.15s; }
+.segBtnActivo { background: white; color: #111827; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); }
+.segBadge { background: #dc2626; color: white; border-radius: 9999px; font-size: 0.625rem; font-weight: 800; padding: 0 0.375rem; }
+
+/* ---------- TOOLBAR (búsqueda + filtros) ---------- */
+.toolbar { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin-bottom: 0.75rem; }
+.searchWrap { position: relative; flex: 1; min-width: 10rem; }
+.searchIcon { position: absolute; left: 0.625rem; top: 50%; transform: translateY(-50%); color: #9ca3af; }
+.searchInput { width: 100%; padding: 0.5rem 0.75rem 0.5rem 2rem; border: 1px solid #e5e7eb; border-radius: 0.625rem; font-size: 0.8125rem; box-sizing: border-box; }
+.searchInput:focus { outline: none; border-color: #3b82f6; }
+.toolbarSelect { max-width: 12rem; }
+.btnSecundario { padding: 10px 14px; border-radius: 8px; border: 1.5px solid var(--color-borde); background: #fff; font-size: .8rem; font-weight: 700; cursor: pointer; white-space: nowrap; transition: border-color .2s ease; }
+.btnSecundario:hover { border-color: #93c5fd; }
+
 /* ---------- LISTA DE PRODUCTOS ---------- */
 .vacio { text-align: center; color: var(--color-texto-suave); padding: 32px 0; }
 .lista { display: flex; flex-direction: column; gap: 10px; }
 .item { display: flex; gap: 10px; align-items: center; background: #fff; border: 1px solid var(--color-borde); border-radius: var(--radio-card); padding: 10px; }
+.itemSel { background: #eff6ff; }
+.checkItem { display: flex; align-items: center; margin-right: 6px; cursor: pointer; flex-shrink: 0; }
+.checkItem input { width: 18px; height: 18px; cursor: pointer; }
 .itemImg { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; background: #f3f4f6; }
 .itemInfo { flex: 1; min-width: 0; }
 .itemNombre { font-weight: 700; font-size: .9rem; }
 .itemMeta { font-size: .75rem; color: var(--color-texto-suave); }
+.estadoChip { display: inline-block; font-size: 0.625rem; font-weight: 700; border-radius: 9999px; padding: 0.125rem 0.5rem; margin-top: 0.25rem; }
+.chipVerde { background: #dcfce7; color: #15803d; }
+.chipAmbar { background: #fef3c7; color: #b45309; }
+.starChip { color: #f59e0b; display: inline; margin-left: 0.25rem; vertical-align: middle; }
 .itemAcciones { display: flex; gap: 6px; }
 .btnAprobar, .btnRechazar, .btnQuitar { width: 38px; height: 38px; border-radius: 10px; border: none; display: flex; align-items: center; justify-content: center; color: #fff; cursor: pointer; }
 .btnAprobar { background: #16a34a; }
 .btnRechazar { background: #dc2626; }
 .btnQuitar { background: #6b7280; }
+
+/* ---------- BARRA MASIVA v3 (fixed mobile / estática desktop) ---------- */
+.barraMasiva { position: fixed; bottom: 0; left: 0; right: 0; z-index: 60; background: #fff; border-top: 1.5px solid #2563eb; box-shadow: 0 -6px 20px rgba(0, 0, 0, .1); padding: .625rem .875rem calc(.625rem + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: .5rem; align-items: stretch; }
+.barraTop { display: flex; align-items: center; justify-content: space-between; }
+.barraContador { font-size: .85rem; font-weight: 700; color: #2563eb; }
+.barraAcciones { display: flex; gap: .375rem; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; align-items: center; }
+.barraAcciones::-webkit-scrollbar { display: none; }
+/* ley del tren: los vagones no se achican, el andén se desliza */
+.barraAcciones > * { flex-shrink: 0; white-space: nowrap; }
+.barraAcciones .btnBulk,
+.barraAcciones .btnVerde,
+.barraAcciones .btnRojoMasivo { white-space: nowrap; height: 2.25rem; }
+.barraAcciones .barraSelect { flex: 0 0 auto; width: auto; min-width: 9rem; max-width: none; margin: 0; }
+.btnLimpiar { padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; font-size: .8rem; cursor: pointer; }
+.btnBulk { display: inline-flex; align-items: center; gap: 0.25rem; border: 1px solid #e5e7eb; background: white; border-radius: 0.5rem; padding: 0.375rem 0.625rem; font-size: 0.75rem; font-weight: 700; color: #374151; cursor: pointer; transition: all 0.15s; }
+.btnBulk:hover { background: #f9fafb; border-color: #d1d5db; }
+.btnBulk:disabled { opacity: 0.5; cursor: not-allowed; }
+.btnVerde { padding: 10px 18px; border: none; border-radius: 8px; background: #16a34a; color: #fff; font-weight: 700; font-size: .85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background .2s ease; }
+.btnVerde:hover { background: #15803d; }
+.btnVerde:disabled { cursor: wait; opacity: .7; }
+.btnRojoMasivo { padding: 10px 18px; border: none; border-radius: 8px; background: #dc2626; color: #fff; font-weight: 700; font-size: .85rem; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background .2s ease; }
+.btnRojoMasivo:hover { background: #b91c1c; }
+.barraSelect { flex: 1 1 auto; min-width: 120px; margin: 0; }
+
+/* ---------- MODAL DE PRECIO MASIVO ---------- */
+.precioModos { display: flex; flex-direction: column; gap: 0.625rem; margin: 0.75rem 0; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 0.75rem; }
+.radioRow { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8125rem; color: #374151; cursor: pointer; padding: 0.375rem; border-radius: 0.5rem; transition: background 0.1s; }
+.radioRow:hover { background: white; }
+.radioLabel { font-weight: 600; }
+.pesoSigno { font-weight: 800; color: #059669; }
+.montoInput { width: 6rem; padding: .375rem .5rem; border: 1px solid #d1d5db; border-radius: .5rem; font-size: .875rem; font-weight: 700; text-align: right; }
+.montoInput:disabled { background: #f3f4f6; color: #9ca3af; font-weight: 400; }
+.pctInput { width: 4rem; padding: .375rem .5rem; border: 1px solid #d1d5db; border-radius: .5rem; font-size: .875rem; font-weight: 700; text-align: center; }
+.pctInput:disabled { background: #f3f4f6; color: #9ca3af; font-weight: 400; }
+
+/* atajos de promo */
+.chipsAtajos { display: flex; flex-wrap: wrap; gap: .375rem; margin-bottom: .75rem; }
+.chipAtajo { border: 1px solid #e5e7eb; background: #fff; border-radius: 9999px; padding: .25rem .625rem; font-size: .6875rem; font-weight: 700; color: #374151; cursor: pointer; transition: all .15s; }
+.chipAtajo:hover { border-color: #d1d5db; background: #f9fafb; }
+.chipAtajoActivo { background: #eff6ff; border-color: #3b82f6; color: #1d4ed8; }
+
+/* preview con aire */
+.previewPrecio { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: .625rem; padding: .625rem; display: flex; flex-direction: column; gap: .5rem; margin-bottom: .75rem; }
+.previewRow, .previewTotal { display: flex; align-items: center; gap: .5rem; font-size: .75rem; }
+.previewNombre { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #374151; font-weight: 600; }
+.previewAntes { color: #9ca3af; text-decoration: line-through; flex-shrink: 0; }
+.previewFlecha { color: #9ca3af; flex-shrink: 0; }
+.previewDespues { color: #15803d; font-weight: 800; flex-shrink: 0; }
+.previewDiff { font-size: 0.6875rem; font-weight: 800; padding: 0.125rem 0.375rem; border-radius: 9999px; flex-shrink: 0; }
+.diffUp { background: #dcfce7; color: #15803d; }
+.diffDown { background: #fee2e2; color: #dc2626; }
+.diffNeutro { background: #f3f4f6; color: #9ca3af; }
+.previewTotal { border-top: 1px dashed #d1d5db; padding-top: .5rem; font-weight: 800; }
+.previewTotal span:first-child { flex: 1 1 auto; color: #111827; }
+.previewMas { font-size: .6875rem; color: #6b7280; margin: 0; text-align: center; }
 
 /* ---------- EDICIÓN DE PRODUCTO ---------- */
 .fotoPrincipal { border-radius: var(--radio-card); overflow: hidden; background: #f3f4f6; aspect-ratio: 1; margin-bottom: 12px; }
@@ -42,142 +130,55 @@
 .fotoBorrar { position: absolute; top: 4px; right: 4px; background: rgba(0, 0, 0, .6); color: #fff; border: none; border-radius: 6px; padding: 4px; display: flex; cursor: pointer; }
 .fotoAdd { width: 72px; height: 72px; border: 2px dashed var(--color-borde); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: var(--color-texto-suave); font-size: .65rem; cursor: pointer; }
 .aprobarBtn { margin-top: 20px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; background: #16a34a; color: #fff; border: none; border-radius: var(--radio-boton); font-size: 1rem; font-weight: 700; cursor: pointer; }
+.errorTexto { font-size: .75rem; color: #dc2626; }
+.contenidoTab { margin-top: 16px; }
 
-/* ---------- MODALES (quitar / rechazar) ---------- */
-.modalOverlay {
-  position: fixed; inset: 0;
-  background: rgba(0, 0, 0, .5);
-  z-index: 80;
-  display: flex; align-items: center; justify-content: center;
-  padding: 16px;
-  animation: fadeIn .15s ease-out;
-}
-@keyframes fadeIn {
-  from { opacity: 0 }
-  to { opacity: 1 }
-}
-.modalBox {
-  background: #fff;
-  border-radius: 16px;
-  padding: 20px;
-  width: 100%; max-width: 340px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, .3);
-  animation: popIn .2s ease-out;
-}
-@keyframes popIn {
-  from { opacity: 0; transform: scale(.95) translateY(8px) }
-  to { opacity: 1; transform: scale(1) translateY(0) }
-}
+/* ---------- MODALES ---------- */
+.modalOverlay { position: fixed; inset: 0; background: rgba(0, 0, 0, .5); z-index: 80; display: flex; align-items: center; justify-content: center; padding: 16px; animation: fadeIn .15s ease-out; }
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+.modalBox { background: #fff; border-radius: 16px; padding: 20px; width: 100%; max-width: 340px; box-shadow: 0 20px 50px rgba(0, 0, 0, .3); animation: popIn .2s ease-out; max-height: 85vh; overflow-y: auto; }
+@keyframes popIn { from { opacity: 0; transform: scale(.95) translateY(8px) } to { opacity: 1; transform: scale(1) translateY(0) } }
 .modalTexto { font-weight: 700; font-size: .95rem; color: #111827; margin: 0 0 4px; }
 .modalSub { font-size: .72rem; color: #6b7280; margin: 0 0 10px; }
 .modalBtns { display: flex; gap: 8px; margin-top: 14px; }
 .modalCancel { flex: 1; padding: 10px; border: 1.5px solid #e5e7eb; background: #fff; border-radius: 10px; font-weight: 700; font-size: .8rem; cursor: pointer; }
 .modalDanger { flex: 1; padding: 10px; border: none; background: #dc2626; color: #fff; border-radius: 10px; font-weight: 700; font-size: .8rem; cursor: pointer; }
 
-
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 767px) {
+  .wrapConBarra { padding-bottom: 6rem; }
+}
 @media (min-width: 768px) {
   .wrap { max-width: 960px; padding: 24px; }
   .lista { display: grid; grid-template-columns: 1fr 1fr; }
+  .barraMasiva { position: static; box-shadow: none; border: 1.5px solid #bfdbfe; border-radius: 12px; padding: .75rem; background: #eff6ff; }
+  .barraAcciones { overflow-x: visible; flex-wrap: wrap; }
 }
+/* ── barra v4: el botón Acciones solo existe en mobile ── */
+.barraTopDer { display: flex; align-items: center; gap: .375rem; }
+.btnAcciones { display: flex; align-items: center; gap: .375rem; background: #2563eb; color: #fff; border: none; border-radius: .625rem; padding: .5rem .875rem; font-weight: 700; font-size: .8125rem; cursor: pointer; }
+.barraAccionesDesktop { display: none; }
 
-/* Grilla 2x2 para los 4 tabs del panel */
-.tabsGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 16px;
+/* ── bottom sheet ── */
+.sheetOverlay { position: fixed; inset: 0; background: rgba(0, 0, 0, .5); z-index: 90; display: flex; align-items: flex-end; animation: fadeIn .15s ease-out; }
+.sheet { background: #fff; width: 100%; border-radius: 1rem 1rem 0 0; padding: .75rem 1rem calc(1rem + env(safe-area-inset-bottom)); max-height: 80vh; overflow-y: auto; animation: sheetUp .22s ease-out; }
+@keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.sheetManija { width: 2.5rem; height: .25rem; background: #d1d5db; border-radius: 9999px; margin: 0 auto .75rem; }
+.sheetTitulo { font-weight: 800; font-size: .9rem; color: #111827; margin: 0 0 .5rem; }
+.sheetRow { display: flex; gap: .5rem; align-items: center; padding: .5rem 0; }
+.sheetItem { display: flex; align-items: center; gap: .75rem; width: 100%; padding: .875rem .5rem; background: none; border: none; border-bottom: 1px solid #f3f4f6; text-align: left; cursor: pointer; color: #374151; }
+.sheetItem svg { flex-shrink: 0; color: #2563eb; }
+.sheetItem p { margin: 0; font-weight: 700; font-size: .9rem; color: #111827; }
+.sheetItem span { font-size: .7rem; color: #6b7280; }
+.sheetItemTexto { flex: 1; min-width: 0; }
+.sheetSelect { width: 100%; margin-top: .375rem; }
+.sheetItemRojo svg { color: #dc2626; }
+.sheetItemRojo p { color: #dc2626; }
+.sheetDivider { height: .5rem; }
+.sheetCancel { width: 100%; margin-top: .75rem; padding: .875rem; border: 1px solid #e5e7eb; background: #fff; border-radius: .75rem; font-weight: 700; font-size: .875rem; cursor: pointer; }
+
+/* ── desktop: inline como siempre, sin botón Acciones ── */
+@media (min-width: 768px) {
+  .btnAcciones { display: none; }
+  .barraAccionesDesktop { display: flex; flex-wrap: wrap; gap: .375rem; align-items: center; }
 }
-
-.tabsGrid .tab {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 12px;
-  border-radius: 10px;
-  border: 1.5px solid var(--color-borde);
-  background: #fff;
-  font-size: .85rem;
-  font-weight: 700;
-  color: #6b7280;
-  cursor: pointer;
-  transition: all .2s ease;
-  user-select: none;                        /* ← no selecciona texto al tocar */
-  -webkit-user-select: none;
-  -webkit-tap-highlight-color: transparent; /* ← sin flash negro en mobile */
-  -webkit-touch-callout: none;
-}
-
-.tabsGrid .tab:hover {
-  border-color: #93c5fd;
-  color: #111827;
-}
-
-/* Activo: gana sobre cualquier .tabActiva viejo del archivo */
-.tabsGrid button.tabActiva,
-.tabsGrid button.tabActiva:hover {
-  background: #111827;
-  border-color: #111827;
-  color: #fff;
-}
-
-.tabsGrid button.tabActiva svg {
-  color: #fff;
-}
-
-/* ---------- toolbars de selección ---------- */
-.toolbar { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; align-items: center; }
-.toolbarDer { display: flex; justify-content: flex-end; margin-top: 12px; }
-.toolbarSelect { flex: 1 1 auto; min-width: 140px; }
-
-.btnSecundario {
-  padding: 10px 14px; border-radius: 8px;
-  border: 1.5px solid var(--color-borde); background: #fff;
-  font-size: .8rem; font-weight: 700; cursor: pointer;
-  white-space: nowrap; transition: border-color .2s ease;
-}
-.btnSecundario:hover { border-color: #93c5fd; }
-
-/* ---------- barra inferior de acción masiva ---------- */
-.barraMasiva {
-  position: sticky; bottom: 0; margin-top: 16px;
-  background: #fff; border: 1.5px solid #2563eb;
-  border-radius: 12px; padding: 12px;
-  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
-  box-shadow: 0 -4px 16px rgba(0,0,0,.08);
-}
-.barraContador { font-size: .85rem; font-weight: 700; color: #2563eb; }
-.barraSelect { flex: 1 1 auto; min-width: 120px; margin: 0; }
-
-.btnVerde {
-  padding: 10px 18px; border: none; border-radius: 8px;
-  background: #16a34a; color: #fff; font-weight: 700;
-  font-size: .85rem; cursor: pointer;
-  display: flex; align-items: center; gap: 6px;
-  transition: background .2s ease;
-}
-.btnVerde:hover { background: #15803d; }
-.btnVerde:disabled { cursor: wait; opacity: .7; }
-
-.btnRojoMasivo {
-  padding: 10px 18px; border: none; border-radius: 8px;
-  background: #dc2626; color: #fff; font-weight: 700;
-  font-size: .85rem; cursor: pointer;
-  display: flex; align-items: center; gap: 6px;
-  transition: background .2s ease;
-}
-.btnRojoMasivo:hover { background: #b91c1c; }
-
-.btnLimpiar {
-  padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px;
-  background: #fff; font-size: .8rem; cursor: pointer;
-}
-
-/* ---------- items seleccionables ---------- */
-.itemSel { background: #eff6ff; }
-.checkItem { display: flex; align-items: center; margin-right: 6px; cursor: pointer; flex-shrink: 0; }
-.checkItem input { width: 18px; height: 18px; cursor: pointer; }
-
-/* ---------- varios ---------- */
-.errorTexto { font-size: .75rem; color: #dc2626; }
-.contenidoTab { margin-top: 16px; }
